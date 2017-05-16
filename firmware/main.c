@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // main.c
 // -----------------------------------------------------------------------------
-// 
+//
 // Simple configurable keyboard for ATTiny devices.
 //
 // Based on:
@@ -9,7 +9,7 @@
 // on vusb.
 //
 // Copyright (C) 2011 Daniel Thompson <daniel@redfelineninja.org.uk>
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -31,7 +31,7 @@
 
 // -----------------------------------------------------------------------------
 
-#define KEY_SCANCODE    53          // Key: ` 
+#define KEY_SCANCODE    53          // Key: `
 
 #define BUTTON_PORT     PORTB       // PORTx - register for button output
 #define BUTTON_PIN      PINB        // PINx - register for button input
@@ -39,8 +39,8 @@
 
 #define LED_BIT         PB1                                 // LED location
 #define LED_OFF()       (PORTB &= ~_BV(LED_BIT))
-#define LED_ON()        (PORTB |= _BV(LED_BIT)) 
-#define LED_TOGGLE()    (PORTB ^= _BV(LED_BIT)) 
+#define LED_ON()        (PORTB |= _BV(LED_BIT))
+#define LED_TOGGLE()    (PORTB ^= _BV(LED_BIT))
 #define LED_INIT()      (LED_OFF(), DDRB |= _BV(LED_BIT))   // Port direction
 
 #define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
@@ -278,6 +278,7 @@ int main(void) {
             }
 
             buttonStateChanged = 0;
+            `
         }
 
     }
