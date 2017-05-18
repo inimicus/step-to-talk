@@ -267,7 +267,7 @@ int main(void) {
         if (buttonStateChanged) {
 
             // Button is Active Low
-            if (!buttonState) {
+            if (buttonState) {
                 // Push
                 usbSendScanCode(KEY_SCANCODE);
                 LED_ON();
