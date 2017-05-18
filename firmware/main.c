@@ -278,7 +278,6 @@ int main(void) {
             }
 
             buttonStateChanged = 0;
-            `
         }
 
     }
