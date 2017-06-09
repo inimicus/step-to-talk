@@ -18,6 +18,7 @@
 // ============================================================================
 
 #include <avr/io.h>
+#include <avr/iotn85.h>
 #include <avr/wdt.h>
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
@@ -27,33 +28,32 @@
 
 #include "usbdrv.h"
 #include "oddebug.h"
-
 #include "osccal.h"
 
 // ----------------------------------------------------------------------------
 
 #define KEY_SCANCODE    53          // Key: `
 
-#define BUTTON_PORT     PORTB       // PORTx - register for button output
-#define BUTTON_PIN      PINB        // PINx - register for button input
-#define BUTTON_BIT      PB0         // bit for button input/output
+#define IO_PORT         PORTB       // IO Register
+#define IO_PINS         PINB        // Inputs
 
-#define LED_BIT         PB1                                 // LED location
-#define LED_OFF()       (PORTB &= ~_BV(LED_BIT))
-#define LED_ON()        (PORTB |= _BV(LED_BIT))
-#define LED_TOGGLE()    (PORTB ^= _BV(LED_BIT))
-#define LED_INIT()      (LED_OFF(), DDRB |= _BV(LED_BIT))   // Port direction
-
-#define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
-#define UTIL_BIN8(hi, lo)   (uchar)(UTIL_BIN4(hi) * 16 + UTIL_BIN4(lo))
+#define IO_SW1          PB0         //
+#define IO_SW2          PB1         // Switches
+#define IO_SW3          PB2         //
 
 // ----------------------------------------------------------------------------
 
 static uchar    reportBuffer[2];    // Buffer for HID reports
 static uchar    idleRate;           // In 4 ms units
 
-static uchar    buttonState;        // Stores state of button
-static uchar    buttonStateChanged; // Indicates edge detect on button
+static uchar    buttonState[4] = {0};         // Store button states
+static uchar    buttonStateChanged[4] = {0};  // Indicates edge detect on button
+
+// Define switch array with index starting at 1 (to match PCB labels)
+const uchar     SW[] = {0, IO_SW1, IO_SW2, IO_SW3};
+
+// Define keys
+const uchar     key[] = {0, 0x04, 0x05, 0x06};
 
 // ============================================================================
 // USB REPORT DESCRIPTOR
@@ -109,10 +109,13 @@ static void usbSendScanCode(uchar scancode) {
 #define TICKS_PER_HUNDREDTH   ((TICKS_PER_SECOND + 50) / 100)
 #define TICKS_PER_MILLISECOND ((TICKS_PER_SECOND + 500) / 1000)
 
-uchar clockHundredths;
-uchar clockMilliseconds;
+#define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
+#define UTIL_BIN8(hi, lo)   (uchar)(UTIL_BIN4(hi) * 16 + UTIL_BIN4(lo))
 
 #define timeAfter(x, y) (((schar) (x - y)) > 0)
+
+uchar clockHundredths;
+uchar clockMilliseconds;
 
 // ----------------------------------------------------------------------------
 
@@ -146,32 +149,35 @@ static void timerPoll(void) {
 // INPUT POLLING
 // ============================================================================
 
-static void buttonPoll(void) {
+static void buttonPoll(uchar key) {
+
     static uchar debounceTimeIsOver;
     static uchar debounceTimeout;
 
-    uchar tempButtonValue = bit_is_clear(BUTTON_PIN, BUTTON_BIT);
+    uchar tempButtonValue = bit_is_clear(IO_PINS, SW[key]);
 
     if (!debounceTimeIsOver) {
+
         if (timeAfter(clockHundredths, debounceTimeout)) {
             debounceTimeIsOver = 1;
         }
+
+    } else {
+
+        // Trigger a change if status has changed and the debounce-delay is over,
+        // this has good debounce rejection and latency but is subject to
+        // false trigger on electrical noise
+
+        if (tempButtonValue != buttonState[key]) {
+            buttonState[key] = tempButtonValue;
+            buttonStateChanged[key] = 1;
+
+            // Restart debounce timer
+            debounceTimeIsOver = 0;
+            debounceTimeout = clockHundredths + 5;
+        }
     }
 
-    // Trigger a change if status has changed and the debounce-delay is over,
-    // this has good debounce rejection and latency but is subject to
-    // false trigger on electrical noise
-    if (tempButtonValue != buttonState && debounceTimeIsOver == 1) {
-
-        // Change button state
-        buttonState = tempButtonValue;
-        buttonStateChanged = 1;
-
-        // Restart debounce timer
-        debounceTimeIsOver = 0;
-        debounceTimeout = clockHundredths + 5;
-
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -194,23 +200,39 @@ static void testPoll(void) {
 // ============================================================================
 
 uchar usbFunctionSetup(uchar data[8]) {
-    usbRequest_t    *rq = (void *)data;
 
-    usbMsgPtr = reportBuffer;
-    if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS){    /* class request type */
-        if(rq->bRequest == USBRQ_HID_GET_REPORT){  /* wValue: ReportType (highbyte), ReportID (lowbyte) */
-            /* we only have one report type, so don't look at wValue */
-            /* buildReport(); */
+    usbRequest_t *rq    = (void *)data;
+    usbMsgPtr           = reportBuffer;
+
+    // CLASS-SPECIFIC REQUEST -------------------------------------------------
+    if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS) {
+
+        if(rq->bRequest == USBRQ_HID_GET_REPORT) {
+            // Only one report type
+            // Don't need to look at wValue
             return sizeof(reportBuffer);
-        }else if(rq->bRequest == USBRQ_HID_GET_IDLE){
+        } else if(rq->bRequest == USBRQ_HID_GET_IDLE) {
             usbMsgPtr = &idleRate;
             return 1;
-        }else if(rq->bRequest == USBRQ_HID_SET_IDLE){
+        } else if(rq->bRequest == USBRQ_HID_SET_IDLE) {
             idleRate = rq->wValue.bytes[1];
         }
-    }else{
-        /* no vendor specific requests implemented */
+
+    // VENDOR-SPECIFIC REQUEST ------------------------------------------------
+    //} else if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_VENDOR) {
+
+    //    if(rq->bRequest == USBRQ_HID_GET_REPORT) {
+    //        /* wValue: ReportType (highbyte), ReportID (lowbyte) */
+    //        //return sizeof(reportBuffer);
+    //    } else if(rq->bRequest == USBRQ_HID_GET_IDLE) {
+    //        //
+    //    }
+
+    // UNKNOWN REQUEST --------------------------------------------------------
+    } else {
+        // Nothing
     }
+
     return 0;
 }
 
@@ -258,11 +280,11 @@ int main(void) {
     // SYSTEM SETUP -----------------------------------------------------------
 
     wdt_enable(WDTO_1S);
-    LED_INIT();
+    //LED_INIT();
 
     // Configure Pull-Ups
-    BUTTON_PORT = 0;                // Clear all pull-ups
-    BUTTON_PORT |= _BV(BUTTON_BIT); // Turn on internal pull-up for switch
+    IO_PORT = 0;                                        // Clear all pull-ups
+    IO_PORT = _BV(SW[1]) | _BV(SW[2]) | _BV(SW[3]);     // Set switch pull-ups
 
     timerInit();
     sei();
@@ -274,25 +296,28 @@ int main(void) {
         // Do all polls
         wdt_reset();
         usbPoll();
-        buttonPoll();
+        buttonPoll(1);
+        buttonPoll(2);
+        buttonPoll(3);
         timerPoll();
         testPoll();
 
         // If a button change is detected, send appropriate scan code
-        if (buttonStateChanged) {
+        for (uchar i = 1; i <= 3; i++) {
 
-            // Button is Active Low
-            if (buttonState) {
-                // Push
-                usbSendScanCode(KEY_SCANCODE);
-                LED_ON();
-            } else {
-                // Release
-                usbSendScanCode(0x80 | KEY_SCANCODE);
-                LED_OFF();
+            if (buttonStateChanged[i]) {
+
+                // Buttons are Active Low
+                if (buttonState[i]) {
+                    usbSendScanCode(key[i]); // Push
+                } else {
+                    usbSendScanCode(0x80 | key[i]); // Release
+                }
+
+                // Reset debounce
+                buttonStateChanged[i] = 0;
             }
 
-            buttonStateChanged = 0;
         }
 
     }
