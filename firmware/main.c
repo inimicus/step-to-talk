@@ -1,10 +1,10 @@
-// -----------------------------------------------------------------------------
+// ============================================================================
 // main.c
-// -----------------------------------------------------------------------------
+// ============================================================================
 //
 // Simple configurable keyboard for ATTiny devices.
 //
-// Based on:
+// Adapted from work by Daniel Thompson:
 // Main functions for RFStompbox, a firmware for a USB guitar pedal based
 // on vusb.
 //
@@ -14,7 +14,8 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// -----------------------------------------------------------------------------
+//
+// ============================================================================
 
 #include <avr/io.h>
 #include <avr/wdt.h>
@@ -29,7 +30,7 @@
 
 #include "osccal.h"
 
-// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 #define KEY_SCANCODE    53          // Key: `
 
@@ -46,7 +47,7 @@
 #define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
 #define UTIL_BIN8(hi, lo)   (uchar)(UTIL_BIN4(hi) * 16 + UTIL_BIN4(lo))
 
-// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 static uchar    reportBuffer[2];    // Buffer for HID reports
 static uchar    idleRate;           // In 4 ms units
@@ -54,9 +55,10 @@ static uchar    idleRate;           // In 4 ms units
 static uchar    buttonState;        // Stores state of button
 static uchar    buttonStateChanged; // Indicates edge detect on button
 
-// -----------------------------------------------------------------------------
+// ============================================================================
+// USB REPORT DESCRIPTOR
+// ============================================================================
 
-// USB report descriptor
 PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
     0x05, 0x01,                     // USAGE_PAGE (Generic Desktop)
     0x09, 0x06,                     // USAGE (Keyboard)
@@ -82,12 +84,15 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 // boot protocol. We don't allow setting status LEDs and we only allow one
 // simultaneous key press (except modifiers). We can therefore use short
 // 2 byte input reports.
+//
 // The report descriptor has been created with usb.org's "HID Descriptor Tool"
 // which can be downloaded from http://www.usb.org/developers/hidpage/.
 // Redundant entries (such as LOGICAL_MINIMUM and USAGE_PAGE) have been omitted
 // for the second INPUT item.
 
-// -----------------------------------------------------------------------------
+// ============================================================================
+// KEYBOARD ACTION
+// ============================================================================
 
 static void usbSendScanCode(uchar scancode) {
     reportBuffer[0] = 0;
@@ -96,7 +101,9 @@ static void usbSendScanCode(uchar scancode) {
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
 }
 
-// -----------------------------------------------------------------------------
+// ============================================================================
+// TIMER CONFIGURATION
+// ============================================================================
 
 #define TICKS_PER_SECOND      ((F_CPU + 1024) / 2048)
 #define TICKS_PER_HUNDREDTH   ((TICKS_PER_SECOND + 50) / 100)
@@ -107,6 +114,8 @@ uchar clockMilliseconds;
 
 #define timeAfter(x, y) (((schar) (x - y)) > 0)
 
+// ----------------------------------------------------------------------------
+
 static void timerInit(void) {
     // First nibble:  Free running clock, no PWM
     // Second nibble: Prescale by 2048 (~8 ticks per millisecond)
@@ -115,6 +124,8 @@ static void timerInit(void) {
     // Synchronous clocking mode
     //PLLCSR &= ~_BV(PCKE);   // clear by default
 }
+
+// ----------------------------------------------------------------------------
 
 static void timerPoll(void) {
     static uchar next_hundredth = TICKS_PER_HUNDREDTH;
@@ -131,7 +142,9 @@ static void timerPoll(void) {
     }
 }
 
-// -----------------------------------------------------------------------------
+// ============================================================================
+// INPUT POLLING
+// ============================================================================
 
 static void buttonPoll(void) {
     static uchar debounceTimeIsOver;
@@ -161,7 +174,7 @@ static void buttonPoll(void) {
     }
 }
 
-// -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 static void testPoll(void) {
 #if 0
@@ -176,9 +189,9 @@ static void testPoll(void) {
 #endif
 }
 
-// -----------------------------------------------------------------------------
-// ------------------------ Interface to USB Driver ----------------------------
-// -----------------------------------------------------------------------------
+// ============================================================================
+// USB DRIVER INTERFACE
+// ============================================================================
 
 uchar usbFunctionSetup(uchar data[8]) {
     usbRequest_t    *rq = (void *)data;
@@ -201,6 +214,8 @@ uchar usbFunctionSetup(uchar data[8]) {
     return 0;
 }
 
+// ----------------------------------------------------------------------------
+
 void hadUsbReset(void) {
     cli();
     calibrateOscillator();
@@ -211,15 +226,15 @@ void hadUsbReset(void) {
         eeprom_write_byte(0, OSCCAL);
 }
 
-// -----------------------------------------------------------------------------
-// --------------------------------- MAIN --------------------------------------
-// -----------------------------------------------------------------------------
+// ============================================================================
+// MAIN
+// ============================================================================
 
 int main(void) {
     uchar i;
     uchar calibrationValue;
 
-    // USB SETUP ---------------------------------------------------------------
+    // USB SETUP --------------------------------------------------------------
 
     // Get calibration value from last time
     calibrationValue = eeprom_read_byte(0);
@@ -240,7 +255,7 @@ int main(void) {
     }
     usbDeviceConnect();
 
-    // SYSTEM SETUP ------------------------------------------------------------
+    // SYSTEM SETUP -----------------------------------------------------------
 
     wdt_enable(WDTO_1S);
     LED_INIT();
@@ -252,9 +267,9 @@ int main(void) {
     timerInit();
     sei();
 
-    // MAIN LOOP ---------------------------------------------------------------
+    // MAIN LOOP --------------------------------------------------------------
 
-    for(;;){
+    for(;;) {
 
         // Do all polls
         wdt_reset();
@@ -285,3 +300,6 @@ int main(void) {
     return 0;
 }
 
+// ============================================================================
+// EOF
+// ============================================================================
