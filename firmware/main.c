@@ -180,21 +180,6 @@ static void buttonPoll(uchar key) {
 
 }
 
-// ----------------------------------------------------------------------------
-
-static void testPoll(void) {
-#if 0
-    // Show (in humane units) that the tick rate is correctly calculated
-    static uchar ledTimeout;
-
-    if (timeAfter(clockHundredths, ledTimeout)) {
-        // Two second duty cycle
-        ledTimeout += 100;
-        LED_TOGGLE();
-    }
-#endif
-}
-
 // ============================================================================
 // USB DRIVER INTERFACE
 // ============================================================================
@@ -300,7 +285,6 @@ int main(void) {
         buttonPoll(2);
         buttonPoll(3);
         timerPoll();
-        testPoll();
 
         // If a button change is detected, send appropriate scan code
         for (uchar i = 1; i <= 3; i++) {
