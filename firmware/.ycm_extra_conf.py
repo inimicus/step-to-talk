@@ -41,6 +41,7 @@ flags = [
 '-Wextra',
 '-Werror',
 '-fexceptions',
+'-Wno-attributes',
 '-DNDEBUG',
 # You 100% do NOT need -DUSE_CLANG_COMPLETER in your flags; only the YCM
 # source code needs it.
