@@ -291,11 +291,12 @@ int main(void) {
 
             if (buttonStateChanged[i]) {
 
-                // Buttons are Active Low
                 if (buttonState[i]) {
-                    usbSendScanCode(key[i]); // Push
+                    // Push
+                    usbSendScanCode(key[i]);
                 } else {
-                    usbSendScanCode(0x80 | key[i]); // Release
+                    // Release
+                    usbSendScanCode(0x80 | key[i]);
                 }
 
                 // Reset debounce
