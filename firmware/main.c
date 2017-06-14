@@ -55,6 +55,7 @@
 #define MOD_R_SHIFT 5
 #define MOD_R_ALT 6
 #define MOD_R_GUI 7
+#define MOD_NONE 8
 
 // ----------------------------------------------------------------------------
 
@@ -68,7 +69,8 @@ static uchar    buttonStateChanged[4] = {0};  // Indicates edge detect on button
 const uchar     SW[] = {0, IO_SW1, IO_SW2, IO_SW3};
 
 // Define keys
-const uchar     key[] = {0, 0x04, 0x05, 0x06};
+const uchar     mod[] = {0, MOD_L_SHIFT, MOD_NONE,  MOD_NONE};
+const uchar     key[] = {0, 0x00, 0x05, 0x06};
 
 // ============================================================================
 // USB REPORT DESCRIPTOR
@@ -111,7 +113,7 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 
 static void usbSendScanCode(uchar modifier, uchar scancode) {
 
-    reportBuffer[0] = (modifier) ? 1 << modifier : 0;
+    reportBuffer[0] = (modifier != MOD_NONE) ? 1 << modifier : 0;
     reportBuffer[1] = scancode;
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
@@ -220,14 +222,14 @@ uchar usbFunctionSetup(uchar data[8]) {
         }
 
     // VENDOR-SPECIFIC REQUEST ------------------------------------------------
-    //} else if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_VENDOR) {
+    } else if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_VENDOR) {
 
-    //    if(rq->bRequest == USBRQ_HID_GET_REPORT) {
-    //        /* wValue: ReportType (highbyte), ReportID (lowbyte) */
-    //        //return sizeof(reportBuffer);
-    //    } else if(rq->bRequest == USBRQ_HID_GET_IDLE) {
-    //        //
-    //    }
+        if(rq->bRequest == USBRQ_HID_GET_REPORT) {
+            /* wValue: ReportType (highbyte), ReportID (lowbyte) */
+            //return sizeof(reportBuffer);
+        } else if(rq->bRequest == USBRQ_HID_GET_IDLE) {
+            //
+        }
 
     // UNKNOWN REQUEST --------------------------------------------------------
     } else {
@@ -309,10 +311,19 @@ int main(void) {
 
                 if (buttonState[i]) {
                     // Push
-                    usbSendScanCode(MOD_L_SHIFT, key[i]);
+                    usbSendScanCode(mod[i], key[i]);
                 } else {
+                    uchar release;
+
+                    // If no key is pressed, no key is released
+                    if (key[i] == 0) {
+                        release = 0;
+                    } else {
+                        release = 0x80 | key[i];
+                    }
+
                     // Release
-                    usbSendScanCode(NULL, 0x80 | key[i]);
+                    usbSendScanCode(MOD_NONE, release);
                 }
 
                 // Reset debounce
