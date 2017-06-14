@@ -31,6 +31,8 @@
 #include "osccal.h"
 
 // ----------------------------------------------------------------------------
+// IO SETUP
+// ----------------------------------------------------------------------------
 
 #define KEY_SCANCODE    53          // Key: `
 
@@ -40,6 +42,19 @@
 #define IO_SW1          PB0         //
 #define IO_SW2          PB1         // Switches
 #define IO_SW3          PB2         //
+
+// ----------------------------------------------------------------------------
+// KEYBOARD MODIFIER KEYS
+// ----------------------------------------------------------------------------
+
+#define MOD_L_CTRL 0
+#define MOD_L_SHIFT 1
+#define MOD_L_ALT 2
+#define MOD_L_GUI 3
+#define MOD_R_CRTL 4
+#define MOD_R_SHIFT 5
+#define MOD_R_ALT 6
+#define MOD_R_GUI 7
 
 // ----------------------------------------------------------------------------
 
@@ -94,8 +109,9 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 // KEYBOARD ACTION
 // ============================================================================
 
-static void usbSendScanCode(uchar scancode) {
-    reportBuffer[0] = 0;
+static void usbSendScanCode(uchar modifier, uchar scancode) {
+
+    reportBuffer[0] = (modifier) ? 1 << modifier : 0;
     reportBuffer[1] = scancode;
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
@@ -293,10 +309,10 @@ int main(void) {
 
                 if (buttonState[i]) {
                     // Push
-                    usbSendScanCode(key[i]);
+                    usbSendScanCode(MOD_L_SHIFT, key[i]);
                 } else {
                     // Release
-                    usbSendScanCode(0x80 | key[i]);
+                    usbSendScanCode(NULL, 0x80 | key[i]);
                 }
 
                 // Reset debounce
