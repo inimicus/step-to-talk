@@ -44,6 +44,13 @@
 #define IO_SW3          PB2         //
 
 // ----------------------------------------------------------------------------
+// VENDOR REQUESTS
+// ----------------------------------------------------------------------------
+
+#define USBRQ_GET_KEY   1
+#define USBRQ_SET_KEY   2
+
+// ----------------------------------------------------------------------------
 // KEYBOARD MODIFIER KEYS
 // ----------------------------------------------------------------------------
 
@@ -69,7 +76,7 @@ static uchar    buttonStateChanged = 0;     // Indicates edge detect on buttons
 const uchar     SW[] = {0, IO_SW1, IO_SW2, IO_SW3};
 
 // Define keys
-const uchar     mod[] = {0, MOD_L_SHIFT, MOD_L_ALT,  MOD_L_GUI};
+const uchar     mod[] = {0, MOD_L_SHIFT, MOD_L_ALT, MOD_L_GUI};
 const uchar     key[] = {0, 0x04, 0x05, 0x06};
 
 // ============================================================================
@@ -111,12 +118,12 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 // KEYBOARD ACTION
 // ============================================================================
 
-static void usbSendScanCode(uchar modifier, uchar SW1, uchar SW2, uchar SW3) {
+static void usbSendScanCode(uchar modifier, uchar keys[]) {
 
     reportBuffer[0] = modifier;
-    reportBuffer[1] = SW1;
-    reportBuffer[2] = SW2;
-    reportBuffer[3] = SW3;
+    reportBuffer[1] = keys[1];
+    reportBuffer[2] = keys[2];
+    reportBuffer[3] = keys[3];
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
 }
@@ -226,10 +233,10 @@ uchar usbFunctionSetup(uchar data[8]) {
     // VENDOR-SPECIFIC REQUEST ------------------------------------------------
     } else if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_VENDOR) {
 
-        if(rq->bRequest == USBRQ_HID_GET_REPORT) {
+        if(rq->bRequest == 1) {
             /* wValue: ReportType (highbyte), ReportID (lowbyte) */
             //return sizeof(reportBuffer);
-        } else if(rq->bRequest == USBRQ_HID_GET_IDLE) {
+        } else if(rq->bRequest == 2) {
             //
         }
 
@@ -315,24 +322,19 @@ int main(void) {
             for (uchar i = 1; i < 4; i++) {
 
                 if (buttonState[i]) {
-                    // Push
+                    // Press
                     keyOut[i] = key[i];
 
                     if (mod[i] != MOD_NONE) {
-                        modOut |= 1 << mod[i];
+                        modOut |= _BV(mod[i]);
                     }
-
                 } else {
-                    // If no key is pressed, no key is released
-                    if (key[i] == 0) {
-                        keyOut[i] = 0;
-                    } else {
-                        keyOut[i] = 0x80 | key[i];
-                    }
+                    // Release, but only if a key was specified
+                    keyOut[i] = (key[i] == 0) ? 0 : 0x80 | key[i];
                 }
             }
 
-            usbSendScanCode(modOut, keyOut[1], keyOut[2], keyOut[3]);
+            usbSendScanCode(modOut, keyOut);
 
             // Reset debounce
             buttonStateChanged = 0;
