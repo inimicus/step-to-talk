@@ -59,18 +59,18 @@
 
 // ----------------------------------------------------------------------------
 
-static uchar    reportBuffer[2];    // Buffer for HID reports
+static uchar    reportBuffer[4];    // Buffer for HID reports
 static uchar    idleRate;           // In 4 ms units
 
-static uchar    buttonState[4] = {0};         // Store button states
-static uchar    buttonStateChanged[4] = {0};  // Indicates edge detect on button
+static uchar    buttonState[4] = {0};       // Store button states
+static uchar    buttonStateChanged = 0;     // Indicates edge detect on buttons
 
 // Define switch array with index starting at 1 (to match PCB labels)
 const uchar     SW[] = {0, IO_SW1, IO_SW2, IO_SW3};
 
 // Define keys
-const uchar     mod[] = {0, MOD_L_SHIFT, MOD_NONE,  MOD_NONE};
-const uchar     key[] = {0, 0x00, 0x05, 0x06};
+const uchar     mod[] = {0, MOD_L_SHIFT, MOD_L_ALT,  MOD_L_GUI};
+const uchar     key[] = {0, 0x04, 0x05, 0x06};
 
 // ============================================================================
 // USB REPORT DESCRIPTOR
@@ -88,7 +88,7 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
     0x75, 0x01,                     //   REPORT_SIZE (1)
     0x95, 0x08,                     //   REPORT_COUNT (8)
     0x81, 0x02,                     //   INPUT (Data,Var,Abs)
-    0x95, 0x01,                     //   REPORT_COUNT (1)
+    0x95, 0x03,                     //   REPORT_COUNT (3)
     0x75, 0x08,                     //   REPORT_SIZE (8)
     0x25, 0x65,                     //   LOGICAL_MAXIMUM (101)
     0x19, 0x00,                     //   USAGE_MINIMUM (Reserved (no event indicated))
@@ -111,10 +111,12 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 // KEYBOARD ACTION
 // ============================================================================
 
-static void usbSendScanCode(uchar modifier, uchar scancode) {
+static void usbSendScanCode(uchar modifier, uchar SW1, uchar SW2, uchar SW3) {
 
-    reportBuffer[0] = (modifier != MOD_NONE) ? 1 << modifier : 0;
-    reportBuffer[1] = scancode;
+    reportBuffer[0] = modifier;
+    reportBuffer[1] = SW1;
+    reportBuffer[2] = SW2;
+    reportBuffer[3] = SW3;
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
 }
@@ -188,7 +190,7 @@ static void buttonPoll(uchar key) {
 
         if (tempButtonValue != buttonState[key]) {
             buttonState[key] = tempButtonValue;
-            buttonStateChanged[key] = 1;
+            buttonStateChanged = 1;
 
             // Restart debounce timer
             debounceTimeIsOver = 0;
@@ -305,31 +307,35 @@ int main(void) {
         timerPoll();
 
         // If a button change is detected, send appropriate scan code
-        for (uchar i = 1; i <= 3; i++) {
+        if (buttonStateChanged) {
 
-            if (buttonStateChanged[i]) {
+            uchar keyOut[4] = {0};
+            uchar modOut = 0;
+
+            for (uchar i = 1; i < 4; i++) {
 
                 if (buttonState[i]) {
                     // Push
-                    usbSendScanCode(mod[i], key[i]);
-                } else {
-                    uchar release;
+                    keyOut[i] = key[i];
 
-                    // If no key is pressed, no key is released
-                    if (key[i] == 0) {
-                        release = 0;
-                    } else {
-                        release = 0x80 | key[i];
+                    if (mod[i] != MOD_NONE) {
+                        modOut |= 1 << mod[i];
                     }
 
-                    // Release
-                    usbSendScanCode(MOD_NONE, release);
+                } else {
+                    // If no key is pressed, no key is released
+                    if (key[i] == 0) {
+                        keyOut[i] = 0;
+                    } else {
+                        keyOut[i] = 0x80 | key[i];
+                    }
                 }
-
-                // Reset debounce
-                buttonStateChanged[i] = 0;
             }
 
+            usbSendScanCode(modOut, keyOut[1], keyOut[2], keyOut[3]);
+
+            // Reset debounce
+            buttonStateChanged = 0;
         }
 
     }
