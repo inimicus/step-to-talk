@@ -34,8 +34,6 @@
 // IO SETUP
 // ----------------------------------------------------------------------------
 
-#define KEY_SCANCODE    53          // Key: `
-
 #define IO_PORT         PORTB       // IO Register
 #define IO_PINS         PINB        // Inputs
 
@@ -43,41 +41,53 @@
 #define IO_SW2          PB1         // Switches
 #define IO_SW3          PB2         //
 
+const uchar             SW[3] = {IO_SW1, IO_SW2, IO_SW3};
+
+// Define keys
+#define NUM_KEYS            3               // Number of keys
+#define NUM_TOTAL_KEYS      NUM_KEYS * 2    // Each key + modifier
+#define SAVE_EEPROM_OFFSET  12              // Where to begin saving
+
+static uchar    buttonState[NUM_KEYS]   = {0};  // Store button states
+static uchar    buttonStateChanged      = 0;    // Button edge detect
+
+typedef struct {
+    uint8_t modifier;
+    uint8_t scancode;
+} keymap_t;
+
+//  |                       savedKeys = 6 Bytes                       |
+//  |         SW1         |         SW2         |         SW3         |
+//  |       keymap_t      |       keymap_t      |       keymap_t      |
+//  |  1 Byte  |  1 Byte  |  1 Byte  |  1 Byte  |  1 Byte  |  1 Byte  |
+//  | Modifier | Scancode | Modifier | Scancode | Modifier | Scancode |
+
+keymap_t savedKeys[NUM_KEYS];
+
 // ----------------------------------------------------------------------------
-// VENDOR REQUESTS
+// USB
 // ----------------------------------------------------------------------------
 
-#define USBRQ_GET_KEY   1
-#define USBRQ_SET_KEY   2
+#define STEPTOTALK_GET_KEY   0
+#define STEPTOTALK_SET_KEY   1
+
+static uchar    reportBuffer[NUM_KEYS + 1];     // Buffer for HID reports
+                                                // Add 1 byte for modifier
+static uchar    idleRate;                       // In 4 ms units
 
 // ----------------------------------------------------------------------------
 // KEYBOARD MODIFIER KEYS
 // ----------------------------------------------------------------------------
 
-#define MOD_L_CTRL 0
-#define MOD_L_SHIFT 1
-#define MOD_L_ALT 2
-#define MOD_L_GUI 3
-#define MOD_R_CRTL 4
-#define MOD_R_SHIFT 5
-#define MOD_R_ALT 6
-#define MOD_R_GUI 7
-#define MOD_NONE 8
-
-// ----------------------------------------------------------------------------
-
-static uchar    reportBuffer[4];    // Buffer for HID reports
-static uchar    idleRate;           // In 4 ms units
-
-static uchar    buttonState[4] = {0};       // Store button states
-static uchar    buttonStateChanged = 0;     // Indicates edge detect on buttons
-
-// Define switch array with index starting at 1 (to match PCB labels)
-const uchar     SW[] = {0, IO_SW1, IO_SW2, IO_SW3};
-
-// Define keys
-const uchar     mod[] = {0, MOD_L_SHIFT, MOD_L_ALT, MOD_L_GUI};
-const uchar     key[] = {0, 0x04, 0x05, 0x06};
+#define MOD_L_CTRL      0
+#define MOD_L_SHIFT     1
+#define MOD_L_ALT       2
+#define MOD_L_GUI       3
+#define MOD_R_CRTL      4
+#define MOD_R_SHIFT     5
+#define MOD_R_ALT       6
+#define MOD_R_GUI       7
+#define MOD_NONE        8
 
 // ============================================================================
 // USB REPORT DESCRIPTOR
@@ -104,28 +114,42 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
     0xc0                            // END_COLLECTION
 };
 
-// We use a simplifed keyboard report descriptor which does not support the
-// boot protocol. We don't allow setting status LEDs and we only allow one
-// simultaneous key press (except modifiers). We can therefore use short
-// 2 byte input reports.
-//
-// The report descriptor has been created with usb.org's "HID Descriptor Tool"
-// which can be downloaded from http://www.usb.org/developers/hidpage/.
-// Redundant entries (such as LOGICAL_MINIMUM and USAGE_PAGE) have been omitted
-// for the second INPUT item.
-
 // ============================================================================
-// KEYBOARD ACTION
+// KEYBOARD ACTIONS
 // ============================================================================
 
 static void usbSendScanCode(uchar modifier, uchar keys[]) {
-
     reportBuffer[0] = modifier;
-    reportBuffer[1] = keys[1];
-    reportBuffer[2] = keys[2];
-    reportBuffer[3] = keys[3];
+    reportBuffer[1] = keys[0];
+    reportBuffer[2] = keys[1];
+    reportBuffer[3] = keys[2];
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
+}
+
+// ----------------------------------------------------------------------------
+
+static void loadKeysFromEeprom() {
+
+    // Read stored values from EEPROM
+    eeprom_read_block((void *)&savedKeys,   // Pointer to save data
+        (const void *)SAVE_EEPROM_OFFSET,   // Location to read from
+        NUM_TOTAL_KEYS);                    // Length to read
+    
+    // If EEPROM byte reads 0xFF, assume empty memory and set to zero
+    for (uchar i = 0; i < NUM_KEYS; i++) {
+        savedKeys[i].modifier = (savedKeys[i].modifier == 0xFF) ? 0 : savedKeys[i].modifier;
+        savedKeys[i].scancode = (savedKeys[i].scancode == 0xFF) ? 0 : savedKeys[i].scancode;
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+static void saveKeysToEeprom() {
+    eeprom_busy_wait();
+    eeprom_update_block((void *)&savedKeys, // Pointer to data
+        (void *)SAVE_EEPROM_OFFSET,         // Location to update
+        NUM_TOTAL_KEYS);                    // Length to update
 }
 
 // ============================================================================
@@ -158,8 +182,8 @@ static void timerInit(void) {
 // ----------------------------------------------------------------------------
 
 static void timerPoll(void) {
-    static uchar next_hundredth = TICKS_PER_HUNDREDTH;
-    static uchar next_millisecond = TICKS_PER_MILLISECOND;
+    static uchar next_hundredth     = TICKS_PER_HUNDREDTH;
+    static uchar next_millisecond   = TICKS_PER_MILLISECOND;
 
     while (timeAfter(TCNT1, next_hundredth)) {
         clockHundredths++;
@@ -233,11 +257,27 @@ uchar usbFunctionSetup(uchar data[8]) {
     // VENDOR-SPECIFIC REQUEST ------------------------------------------------
     } else if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_VENDOR) {
 
-        if(rq->bRequest == 1) {
-            /* wValue: ReportType (highbyte), ReportID (lowbyte) */
-            //return sizeof(reportBuffer);
-        } else if(rq->bRequest == 2) {
-            //
+        if(rq->bRequest == STEPTOTALK_GET_KEY) {
+
+            // Get key mapping
+            loadKeysFromEeprom(); 
+
+            // Send to host
+            usbMsgPtr = (usbMsgPtr_t)savedKeys;
+            return sizeof(savedKeys);
+
+        } else if(rq->bRequest == STEPTOTALK_SET_KEY) {
+
+            // Get key from request
+            savedKeys[rq->wIndex.bytes[0]].modifier = rq->wValue.bytes[0];
+            savedKeys[rq->wIndex.bytes[0]].scancode = rq->wValue.bytes[1];
+
+            // Save
+            saveKeysToEeprom();
+            return sizeof(savedKeys);
+
+        } else {
+            // Not understood
         }
 
     // UNKNOWN REQUEST --------------------------------------------------------
@@ -296,10 +336,14 @@ int main(void) {
 
     // Configure Pull-Ups
     IO_PORT = 0;                                        // Clear all pull-ups
-    IO_PORT = _BV(SW[1]) | _BV(SW[2]) | _BV(SW[3]);     // Set switch pull-ups
+    IO_PORT = _BV(SW[0]) | _BV(SW[1]) | _BV(SW[2]);     // Set switch pull-ups
 
     timerInit();
     sei();
+
+    // KEY SETUP --------------------------------------------------------------
+    
+    loadKeysFromEeprom();
 
     // MAIN LOOP --------------------------------------------------------------
 
@@ -308,29 +352,34 @@ int main(void) {
         // Do all polls
         wdt_reset();
         usbPoll();
+        buttonPoll(0);
         buttonPoll(1);
         buttonPoll(2);
-        buttonPoll(3);
         timerPoll();
 
         // If a button change is detected, send appropriate scan code
         if (buttonStateChanged) {
 
-            uchar keyOut[4] = {0};
+            // Temporary
+            uchar keyOut[NUM_KEYS] = {0};
             uchar modOut = 0;
 
-            for (uchar i = 1; i < 4; i++) {
+            for (uchar i = 0; i < NUM_KEYS; i++) {
 
                 if (buttonState[i]) {
                     // Press
-                    keyOut[i] = key[i];
+                    keyOut[i] = savedKeys[i].scancode;
 
-                    if (mod[i] != MOD_NONE) {
-                        modOut |= _BV(mod[i]);
+                    if (savedKeys[i].modifier != MOD_NONE) {
+                        modOut |= _BV(savedKeys[i].modifier);
                     }
                 } else {
                     // Release, but only if a key was specified
-                    keyOut[i] = (key[i] == 0) ? 0 : 0x80 | key[i];
+                    if (savedKeys[i].scancode == 0) {
+                        keyOut[i] = 0;
+                    } else {
+                        keyOut[i] = 0x80 | savedKeys[i].scancode;
+                    }
                 }
             }
 
