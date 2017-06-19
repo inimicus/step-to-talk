@@ -131,6 +131,9 @@ static void usbSendScanCode(uchar modifier, uchar keys[]) {
 
 static void loadKeysFromEeprom() {
 
+    // Wait for EEPROM activity to stop
+    eeprom_busy_wait();
+
     // Read stored values from EEPROM
     eeprom_read_block((void *)&savedKeys,   // Pointer to save data
         (const void *)SAVE_EEPROM_OFFSET,   // Location to read from
