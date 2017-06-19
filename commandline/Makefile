@@ -7,39 +7,32 @@ ifeq ($(shell uname), Linux)
 	USBFLAGS=$(shell libusb-config --cflags)
 	USBLIBS=$(shell libusb-config --libs)
 	EXE_SUFFIX =
-	OSFLAG = -D LINUX
+	OSFLAG = -DLINUX
 else ifeq ($(shell uname), Darwin)
 	USBFLAGS=$(shell libusb-config --cflags || libusb-legacy-config --cflags)
 	USBLIBS=$(shell libusb-config --libs || libusb-legacy-config --libs)
 	EXE_SUFFIX =
-	OSFLAG = -D MAC_OS
-	# Uncomment these to create a static binary:
-	# USBLIBS = /opt/local/lib/libusb-legacy/libusb-legacy.a
-	# USBLIBS += -mmacosx-version-min=10.5
-	# USBLIBS += -framework CoreFoundation
-	# USBLIBS += -framework IOKit
-	# Uncomment these to create a dual architecture binary:
-	# OSFLAG += -arch x86_64 -arch i386
+	OSFLAG = -DMAC_OS
 else ifeq ($(shell uname), OpenBSD)
 	USBFLAGS=$(shell libusb-config --cflags || libusb-legacy-config --cflags)
 	USBLIBS=$(shell libusb-config --libs || libusb-legacy-config --libs)
 	EXE_SUFFIX =
-	OSFLAG = -D OPENBSD
+	OSFLAG = -DOPENBSD
 else ifeq ($(shell uname), FreeBSD)
 	USBFLAGS=
 	USBLIBS= -lusb
 	EXE_SUFFIX =
-	OSFLAG = -D OPENBSD
+	OSFLAG = -DOPENBSD
 else
 	USBFLAGS = -I C:\MinGW\include
 	USBLIBS = -L C:\MinGW\lib -lusb
 	EXE_SUFFIX = .exe
-	OSFLAG = -D WIN
+	OSFLAG = -DWIN
 endif
 
 LIBS    = $(USBLIBS)
 INCLUDE = library
-CFLAGS  = $(USBFLAGS) $(LIBS) -I$(INCLUDE) -O -g $(OSFLAG)
+CFLAGS  = $(USBFLAGS) -I$(INCLUDE) -O -g $(OSFLAG)
 
 LWLIBS = micronucleus_lib littleWire_util
 EXAMPLES = steptotalk
