@@ -12,7 +12,7 @@
 #include "micronucleus_lib.h"
 #include "littleWire_util.h"
 
-#define CONNECT_WAIT 250 /* milliseconds to wait after detecting device on usb bus - probably excessive */
+#define CONNECT_WAIT 250    // Wait time after detecting device on USB
 
 // ----------------------------------------------------------------------------
 // KEYBOARD MODIFIER KEYS
@@ -49,12 +49,16 @@ void getKeyMapping(micronucleus* nucleus) {
         MICRONUCLEUS_USB_TIMEOUT); // Timeout
 
     //printf("> Device has firmware version %d.%d\n", my_device->version.major, my_device->version.minor);
-    printf("> Mod 1: %d\t(0x%02X)\n", nucleus->mod1, nucleus->mod1);
-    printf("> Key 1: %d\t(0x%02X)\n", nucleus->key1, nucleus->key1);
-    printf("> Mod 2: %d\t(0x%02X)\n", nucleus->mod2, nucleus->mod2);
-    printf("> Key 2: %d\t(0x%02X)\n", nucleus->key2, nucleus->key2);
-    printf("> Mod 3: %d\t(0x%02X)\n", nucleus->mod3, nucleus->mod3);
-    printf("> Key 3: %d\t(0x%02X)\n", nucleus->key3, nucleus->key3);
+    if (res < 0) {
+        printf("> Could not communicate with the device.");
+    } else {
+        printf("> Mod 1: %d\t(0x%02X)\n", nucleus->mod1, nucleus->mod1);
+        printf("> Key 1: %d\t(0x%02X)\n", nucleus->key1, nucleus->key1);
+        printf("> Mod 2: %d\t(0x%02X)\n", nucleus->mod2, nucleus->mod2);
+        printf("> Key 2: %d\t(0x%02X)\n", nucleus->key2, nucleus->key2);
+        printf("> Mod 3: %d\t(0x%02X)\n", nucleus->mod3, nucleus->mod3);
+        printf("> Key 3: %d\t(0x%02X)\n", nucleus->key3, nucleus->key3);
+    }
 
 }
 
@@ -62,7 +66,7 @@ void updateKeyMapping(micronucleus* nucleus, uint8_t index, uint8_t modifier, ui
 
     uint16_t newValue = (scancode << 8) | (modifier & 0xFF);
 
-    int res = usb_control_msg(nucleus->device,
+    usb_control_msg(nucleus->device,
         USB_ENDPOINT_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE, // bmRequestType
         STEPTOTALK_SET_KEY, // bRequest
         newValue, // wValue
@@ -77,12 +81,9 @@ void updateKeyMapping(micronucleus* nucleus, uint8_t index, uint8_t modifier, ui
 // MAIN
 // ============================================================================
 
-int main(int argc, char **argv) {
+//int main(int argc, char **argv) {
+int main() {
     micronucleus *my_device = NULL;
-
-    // parse arguments
-    int run = 0;
-    int arg_pointer = 1;
 
     printf("> Please plug in the device ... \n");
     printf("> Press CTRL+C to terminate the program.\n");
@@ -94,34 +95,16 @@ int main(int argc, char **argv) {
 
     printf("> Device is found!\n");
 
-    //int res = usb_control_msg(my_device->device,
-    //        USB_ENDPOINT_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE, // bmRequestType
-    //        1, // bRequest
-    //        0x04, // wValue
-    //        4, // wIndex
-    //        NULL, // Pointer to destination buffer
-    //        0, // wLength
-    //        MICRONUCLEUS_USB_TIMEOUT); // Timeout
-
-    //// Device descriptor was found, but talking to it was not succesful. This can happen when the device is being reset.
-    //if (res < 0) {
-    //    return EXIT_FAILURE;  
-    //}
-
-    //printf("> Device has firmware version %d.%d\n", my_device->version.major, my_device->version.minor);
-    //printf("> Mod 1: %d\t(0x%02X)\n", my_device->mod1, my_device->mod1);
-    //printf("> Mod 2: %d\t(0x%02X)\n", my_device->mod2, my_device->mod2);
-    //printf("> Mod 3: %d\t(0x%02X)\n", my_device->mod3, my_device->mod3);
-    //printf("> Key 1: %d\t(0x%02X)\n", my_device->key1, my_device->key1);
-    //printf("> Key 2: %d\t(0x%02X)\n", my_device->key2, my_device->key2);
-    //printf("> Key 3: %d\t(0x%02X)\n", my_device->key3, my_device->key3);
-    
     getKeyMapping(my_device);
+
+    //printf("> Changing mapping\n");
     //updateKeyMapping(my_device, 0, 0, 0x04);
     //updateKeyMapping(my_device, 1, 0, 0x05);
     //updateKeyMapping(my_device, 2, 0, 0x06);
 
+    //printf("Now reads:\n");
     //getKeyMapping(my_device);
+
     return EXIT_SUCCESS;
 }
 
