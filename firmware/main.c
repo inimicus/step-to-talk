@@ -79,15 +79,7 @@ static uchar    idleRate;                       // In 4 ms units
 // KEYBOARD MODIFIER KEYS
 // ----------------------------------------------------------------------------
 
-#define MOD_L_CTRL      0
-#define MOD_L_SHIFT     1
-#define MOD_L_ALT       2
-#define MOD_L_GUI       3
-#define MOD_R_CRTL      4
-#define MOD_R_SHIFT     5
-#define MOD_R_ALT       6
-#define MOD_R_GUI       7
-#define MOD_NONE        8
+#define MOD_NONE   0
 
 // ============================================================================
 // USB REPORT DESCRIPTOR
@@ -374,7 +366,7 @@ int main(void) {
                     keyOut[i] = savedKeys[i].scancode;
 
                     if (savedKeys[i].modifier != MOD_NONE) {
-                        modOut |= _BV(savedKeys[i].modifier);
+                        modOut |= savedKeys[i].modifier;
                     }
                 } else {
                     // Release, but only if a key was specified
