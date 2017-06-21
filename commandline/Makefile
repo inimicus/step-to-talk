@@ -53,3 +53,4 @@ $(EXAMPLES): $(addsuffix .o, $(LWLIBS))
 
 clean:
 	rm -f $(EXAMPLES)$(EXE_SUFFIX) *.o *.exe
+	rm -rf *.dSYM
