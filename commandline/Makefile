@@ -34,7 +34,7 @@ LIBS    = $(USBLIBS)
 INCLUDE = library
 CFLAGS  = $(USBFLAGS) -I$(INCLUDE) -O -g $(OSFLAG)
 
-LWLIBS = micronucleus_lib littleWire_util
+LWLIBS = steptotalk_lib littleWire_util
 EXAMPLES = steptotalk
 
 .PHONY:	clean library
