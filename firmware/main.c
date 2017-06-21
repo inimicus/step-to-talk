@@ -18,7 +18,6 @@
 // ============================================================================
 
 #include <avr/io.h>
-#include <avr/iotn85.h>
 #include <avr/wdt.h>
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
