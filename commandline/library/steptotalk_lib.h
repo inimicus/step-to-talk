@@ -95,7 +95,7 @@ void printHelp();
 // Arguments:   None
 // Returns:     Nothing
 // ----------------------------------------------------------------------------
-void getDeviceInfo(stepDevice* step);
+int getDeviceInfo(stepDevice* step);
 
 // ----------------------------------------------------------------------------
 // Function:    printKeyMapping

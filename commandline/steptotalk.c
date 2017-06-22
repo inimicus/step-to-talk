@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
     uint8_t setIndex        = 0;
     uint8_t setModifier     = 0;
     uint8_t setScancode     = 0;
+    int result              = 0;
 
     // Parse arguments --------------------------------------------------------
     int arg_pointer = 1;
@@ -81,8 +82,12 @@ int main(int argc, char **argv) {
 
     // Perform specified operation --------------------------------------------
     if (showKeyMapping) {
-        getDeviceInfo(Step);    // Get keys (May have changed since initial connect)
-        printKeyMapping(Step);  // Print out
+        result = getDeviceInfo(Step);    // Get keys (May have changed since initial connect)
+        if (result < 0) {
+            printf("Error getting key map (#%d): %s", result, libusb_error_name(result));
+        } else {
+            printKeyMapping(Step);  // Print out
+        }
     } else {
 
         // If an index is specified, grab it
@@ -105,9 +110,9 @@ int main(int argc, char **argv) {
         printf("               Modifier:  0x%02X\n", setModifier);
         printf("               Scancode:  0x%02X\n", setScancode);
 
-        int res = updateKeyMapping(Step, setIndex, setModifier, setScancode);
-        if (res < 0) {
-            printf("Error updating key map (#%d): %s", res, libusb_error_name(res));
+        int result = updateKeyMapping(Step, setIndex, setModifier, setScancode);
+        if (result < 0) {
+            printf("Error updating key map (#%d): %s", result, libusb_error_name(result));
         } else {
             puts("");
             puts("                    DONE");

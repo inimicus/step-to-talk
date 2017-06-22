@@ -41,7 +41,7 @@ stepDevice* device_connect() {
 
 // ----------------------------------------------------------------------------
 
-void getDeviceInfo(stepDevice* Step) {
+int getDeviceInfo(stepDevice* Step) {
 
     unsigned char buffer[6];
 
@@ -55,11 +55,7 @@ void getDeviceInfo(stepDevice* Step) {
         6,                                                    // wLength
         STEPTOTALK_USB_TIMEOUT);                              // Timeout
 
-    if (res < 0) {
-        printf("\nCould not communicate with the device.");
-    } else {
-        assert(res >= 6);
-
+    if (res >= 0) {
         Step->mod1 = buffer[0];
         Step->key1 = buffer[1];
         Step->mod2 = buffer[2];
@@ -67,6 +63,8 @@ void getDeviceInfo(stepDevice* Step) {
         Step->mod3 = buffer[4];
         Step->key3 = buffer[5];
     }
+
+    return res;
 
 }
 
