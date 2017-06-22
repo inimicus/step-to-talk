@@ -1,5 +1,7 @@
 # Makefile initially writen for Little-Wire by Omer Kilic <omerkilic@gmail.com>
 # Later on modified by ihsan Kehribar <ihsan@kehribar.me> for Micronucleus bootloader application.
+# Then modified by Garret Jennings <gjennings@me.com> for use in programming
+# Step-to-Talk, a user-programmable USB keyboard based on V-USB.
 
 CC=gcc
 
@@ -7,27 +9,32 @@ ifeq ($(shell uname), Linux)
 	USBFLAGS=$(shell libusb-config --cflags)
 	USBLIBS=$(shell libusb-config --libs)
 	EXE_SUFFIX =
-	OSFLAG = -DLINUX
+	OSFLAG = -D LINUX
 else ifeq ($(shell uname), Darwin)
-	USBFLAGS=$(shell libusb-config --cflags || libusb-legacy-config --cflags)
-	USBLIBS=$(shell libusb-config --libs || libusb-legacy-config --libs)
+	# libusb-config points to the old and wrong libusb-compat version
+	# Manually specify the correct path unless libusb-config correctly
+	# points to libusb-1.0
+	#USBFLAGS=$(shell libusb-config --cflags || libusb-legacy-config --cflags)
+	USBFLAGS= -I /usr/local/Cellar/libusb/1.0.21/include/libusb-1.0/
+	#USBLIBS=$(shell libusb-config --libs || libusb-legacy-config --libs)
+	USBLIBS= -L /usr/local/Cellar/libusb/1.0.21/lib/ -lusb-1.0
 	EXE_SUFFIX =
-	OSFLAG = -DMAC_OS
+	OSFLAG = -D MAC_OS
 else ifeq ($(shell uname), OpenBSD)
 	USBFLAGS=$(shell libusb-config --cflags || libusb-legacy-config --cflags)
 	USBLIBS=$(shell libusb-config --libs || libusb-legacy-config --libs)
 	EXE_SUFFIX =
-	OSFLAG = -DOPENBSD
+	OSFLAG = -D OPENBSD
 else ifeq ($(shell uname), FreeBSD)
 	USBFLAGS=
-	USBLIBS= -lusb
+	USBLIBS= -lusb-1.0
 	EXE_SUFFIX =
-	OSFLAG = -DOPENBSD
+	OSFLAG = -D OPENBSD
 else
 	USBFLAGS = -I C:\MinGW\include
-	USBLIBS = -L C:\MinGW\lib -lusb
+	USBLIBS = -L C:\MinGW\lib -lusb-1.0
 	EXE_SUFFIX = .exe
-	OSFLAG = -DWIN
+	OSFLAG = -D WIN
 endif
 
 LIBS    = $(USBLIBS)
@@ -49,7 +56,7 @@ $(LWLIBS):
 
 $(EXAMPLES): $(addsuffix .o, $(LWLIBS))
 	@echo Building command line tool: $@...
-	$(CC) $(CFLAGS) -o $@$(EXE_SUFFIX) $@.c $^ $(LIBS)
+	$(CC) $(CFLAGS) $(LIBS) -o $@$(EXE_SUFFIX) $@.c $^ $(LIBS)
 
 clean:
 	rm -f $(EXAMPLES)$(EXE_SUFFIX) *.o *.exe

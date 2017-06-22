@@ -3,7 +3,7 @@
 // ============================================================================
 //
 // Command line interface for reprogramming of Step-to-Talk USB devices.
-// Simply run this utility, with the correct parameters, to reprogram the 
+// Simply run this utility, with the correct parameters, to reprogram the
 // keymapping of the device.
 //
 // Run 'steptotalk -h' for more information on usage.
@@ -12,8 +12,8 @@
 //  - ST01
 //  - ST03
 //
-// This utility heavily modified and customized from the original Micronucleus 
-// command line utility, originally written by Ihsan Kehribar 
+// This utility heavily modified and customized from the original Micronucleus
+// command line utility, originally written by Ihsan Kehribar
 // <ihsan@kehribar.me> and Bluebie <a@creativepony.com> as seen here:
 //
 // https://github.com/micronucleus/micronucleus/tree/master/commandline
@@ -54,7 +54,8 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[arg_pointer], "--show") == 0 || strcmp(argv[arg_pointer], "-s") == 0) {
             showKeyMapping = 1;
         } else {
-            // Should be modifiers, scancodes, indices then
+            // Reaching here: Passed CLI arguments should
+            // only be modifiers, scancodes, indices
         }
 
         arg_pointer++;
