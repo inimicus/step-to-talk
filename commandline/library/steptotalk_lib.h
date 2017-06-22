@@ -11,7 +11,7 @@
 
 // libusb, see http://libusb.sourceforge.net/
 #if defined WIN
-  #include <lusb0_usb.h>    
+  #include <lusb0_usb.h>
 #else
   #include <usb.h>
 #endif
@@ -112,9 +112,9 @@ void printKeyMapping(stepDevice* step);
 
 // ----------------------------------------------------------------------------
 // Function:    updateKeyMapping
-// Description: Sends data for one key to update device mapping and save 
-//              to EEPROM.  Operates on one key at a time due to USB control 
-//              endpoints being limited to two-byte messages and the desire 
+// Description: Sends data for one key to update device mapping and save
+//              to EEPROM.  Operates on one key at a time due to USB control
+//              endpoints being limited to two-byte messages and the desire
 //              to keep things simple.
 // Arguments:   stepDevice* Step: Pointer to STT device
 //                 uint8_t index: Index of key to assign
