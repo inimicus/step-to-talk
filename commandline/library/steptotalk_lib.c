@@ -86,11 +86,11 @@ void printKeyMapping(stepDevice* Step) {
 
 // ----------------------------------------------------------------------------
 
-void updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t scancode) {
+int updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t scancode) {
 
     uint16_t newValue = (scancode << 8) | (modifier & 0xFF);
 
-    libusb_control_transfer(Step->device,                     // Device
+    int res = libusb_control_transfer(Step->device,           // Device
                                                               // bmRequestType
         LIBUSB_ENDPOINT_IN|LIBUSB_REQUEST_TYPE_VENDOR|LIBUSB_RECIPIENT_DEVICE,
         STEPTOTALK_SET_KEY,                                   // bRequest
@@ -100,6 +100,7 @@ void updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t
         0,                                                    // wLength
         STEPTOTALK_USB_TIMEOUT);                              // Timeout
 
+    return res;
 }
 
 // ----------------------------------------------------------------------------

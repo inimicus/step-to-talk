@@ -105,11 +105,14 @@ int main(int argc, char **argv) {
         printf("               Modifier:  0x%02X\n", setModifier);
         printf("               Scancode:  0x%02X\n", setScancode);
 
-        updateKeyMapping(Step, setIndex, setModifier, setScancode);
-
-        puts("");
-        puts("                    DONE");
-        puts("==============================================");
+        int res = updateKeyMapping(Step, setIndex, setModifier, setScancode);
+        if (res < 0) {
+            printf("Error updating key map (#%d): %s", res, libusb_error_name(res));
+        } else {
+            puts("");
+            puts("                    DONE");
+            puts("==============================================");
+        }
 
     }
 

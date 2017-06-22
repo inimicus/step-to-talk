@@ -117,6 +117,6 @@ void printKeyMapping(stepDevice* step);
 //              uint8_t scancode: Scancode of the key to assign
 // Returns:     Nothing
 // ----------------------------------------------------------------------------
-void updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t scancode);
+int updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t scancode);
 
 #endif
