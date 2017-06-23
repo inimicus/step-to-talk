@@ -69,7 +69,7 @@ flags = [
 '-I',
 './ClangCompleter',
 '-I',
-'/usr/local/Cellar/libusb-compat/0.1.5_1/include',
+'/usr/local/Cellar/libusb/1.0.21/include/libusb-1.0/',
 '-I',
 'library',
 ]

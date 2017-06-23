@@ -9,12 +9,7 @@
 // Header files
 // ============================================================================
 
-// libusb, see http://libusb.sourceforge.net/
-#if defined WIN
-  #include <lusb0_usb.h>
-#else
-  #include <usb.h>
-#endif
+#include <libusb.h> // See http://libusb.sourceforge.net/
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +58,7 @@ typedef struct {
 // ----------------------------------------------------------------------------
 
 typedef struct {
-    usb_dev_handle *device;
+    libusb_device_handle *device;
     stt_version version;
     uint8_t mod1;
     uint8_t mod2;
@@ -100,7 +95,7 @@ void printHelp();
 // Arguments:   None
 // Returns:     Nothing
 // ----------------------------------------------------------------------------
-void getDeviceInfo(stepDevice* step);
+int getDeviceInfo(stepDevice* step);
 
 // ----------------------------------------------------------------------------
 // Function:    printKeyMapping
@@ -122,6 +117,6 @@ void printKeyMapping(stepDevice* step);
 //              uint8_t scancode: Scancode of the key to assign
 // Returns:     Nothing
 // ----------------------------------------------------------------------------
-void updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t scancode);
+int updateKeyMapping(stepDevice* Step, uint8_t index, uint8_t modifier, uint8_t scancode);
 
 #endif

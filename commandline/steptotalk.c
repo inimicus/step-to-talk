@@ -3,7 +3,7 @@
 // ============================================================================
 //
 // Command line interface for reprogramming of Step-to-Talk USB devices.
-// Simply run this utility, with the correct parameters, to reprogram the 
+// Simply run this utility, with the correct parameters, to reprogram the
 // keymapping of the device.
 //
 // Run 'steptotalk -h' for more information on usage.
@@ -12,8 +12,8 @@
 //  - ST01
 //  - ST03
 //
-// This utility heavily modified and customized from the original Micronucleus 
-// command line utility, originally written by Ihsan Kehribar 
+// This utility heavily modified and customized from the original Micronucleus
+// command line utility, originally written by Ihsan Kehribar
 // <ihsan@kehribar.me> and Bluebie <a@creativepony.com> as seen here:
 //
 // https://github.com/micronucleus/micronucleus/tree/master/commandline
@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
     uint8_t setIndex        = 0;
     uint8_t setModifier     = 0;
     uint8_t setScancode     = 0;
+    int result              = 0;
 
     // Parse arguments --------------------------------------------------------
     int arg_pointer = 1;
@@ -54,7 +55,8 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[arg_pointer], "--show") == 0 || strcmp(argv[arg_pointer], "-s") == 0) {
             showKeyMapping = 1;
         } else {
-            // Should be modifiers, scancodes, indices then
+            // Reaching here: Passed CLI arguments should
+            // only be modifiers, scancodes, indices
         }
 
         arg_pointer++;
@@ -80,8 +82,12 @@ int main(int argc, char **argv) {
 
     // Perform specified operation --------------------------------------------
     if (showKeyMapping) {
-        getDeviceInfo(Step);    // Get keys (May have changed since initial connect)
-        printKeyMapping(Step);  // Print out
+        result = getDeviceInfo(Step);    // Get keys (May have changed since initial connect)
+        if (result < 0) {
+            printf("Error getting key map (#%d): %s", result, libusb_error_name(result));
+        } else {
+            printKeyMapping(Step);  // Print out
+        }
     } else {
 
         // If an index is specified, grab it
@@ -104,11 +110,14 @@ int main(int argc, char **argv) {
         printf("               Modifier:  0x%02X\n", setModifier);
         printf("               Scancode:  0x%02X\n", setScancode);
 
-        updateKeyMapping(Step, setIndex, setModifier, setScancode);
-
-        puts("");
-        puts("                    DONE");
-        puts("==============================================");
+        int result = updateKeyMapping(Step, setIndex, setModifier, setScancode);
+        if (result < 0) {
+            printf("Error updating key map (#%d): %s", result, libusb_error_name(result));
+        } else {
+            puts("");
+            puts("                    DONE");
+            puts("==============================================");
+        }
 
     }
 
