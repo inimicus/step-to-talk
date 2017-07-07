@@ -82,12 +82,17 @@ int main(int argc, char **argv) {
 
     // Perform specified operation --------------------------------------------
     if (showKeyMapping) {
+
         result = getDeviceInfo(Step);    // Get keys (May have changed since initial connect)
         if (result < 0) {
             printf("Error getting key map (#%d): %s", result, libusb_error_name(result));
+
+            device_close(Step);
+            return EXIT_FAILURE;
         } else {
             printKeyMapping(Step);  // Print out
         }
+
     } else {
 
         // If an index is specified, grab it
@@ -99,6 +104,8 @@ int main(int argc, char **argv) {
                 printf("\r                    ERROR!                  \n");
                 printf("              Index incorrect or\n");
                 printf("          not within acceptable range.\n");
+
+                device_close(Step);
                 return EXIT_FAILURE;
             }
         }
@@ -113,6 +120,8 @@ int main(int argc, char **argv) {
         int result = updateKeyMapping(Step, setIndex, setModifier, setScancode);
         if (result < 0) {
             printf("Error updating key map (#%d): %s", result, libusb_error_name(result));
+            device_close(Step);
+            return EXIT_FAILURE;
         } else {
             puts("");
             puts("                    DONE");
@@ -121,6 +130,7 @@ int main(int argc, char **argv) {
 
     }
 
+    device_close(Step);
     return EXIT_SUCCESS;
 }
 

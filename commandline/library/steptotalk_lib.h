@@ -73,12 +73,20 @@ typedef struct {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function:    device_connect
-// Description: Find and connect to a Step-to-Talk device.
-// Arguments:   None
+// function:    device_connect
+// description: Find and connect to a step-to-talk device.
+// arguments:   None
 // Returns:     Device pointer
 // ----------------------------------------------------------------------------
 stepDevice* device_connect();
+
+// ----------------------------------------------------------------------------
+// function:    device_close
+// description: Close a device
+// arguments:   Device to close
+// Returns:     Nothing
+// ----------------------------------------------------------------------------
+void device_close(stepDevice *Step);
 
 // ----------------------------------------------------------------------------
 // Function:    printHelp

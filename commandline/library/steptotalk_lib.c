@@ -15,28 +15,46 @@ stepDevice* device_connect() {
     libusb_device **devs, **dev;
 
     // Initialize USB
-    if (libusb_init(NULL) < 0 || libusb_get_device_list(NULL, &devs) < 0) return NULL;
+    if (libusb_init(NULL) < 0 || libusb_get_device_list(NULL, &devs) < 0) {
+        return NULL;
+    }
 
     for (dev = devs; *dev; dev++) {
         struct libusb_device_descriptor desc;
 
         // Try to get descriptor, otherwise skip
-        if (libusb_get_device_descriptor(*dev, &desc) < 0) continue;
-
-            // Match device
-            if (desc.idVendor     == STEPTOTALK_VENDOR_ID
-                && desc.idProduct == STEPTOTALK_PRODUCT_ID) {
-
-                    Step = malloc(sizeof(stepDevice));
-                    Step->version.major = (desc.bcdDevice >> 8) & 0xFF;
-                    Step->version.minor = desc.bcdDevice & 0xFF;
-
-                    if (libusb_open(*dev, &Step->device) < 0) return NULL;
-
-            }
+        if (libusb_get_device_descriptor(*dev, &desc) < 0) {
+            // Unref device without descriptor
+            libusb_unref_device(*dev);
+            continue;
         }
 
+        // Match device
+        if (desc.idVendor     == STEPTOTALK_VENDOR_ID
+            && desc.idProduct == STEPTOTALK_PRODUCT_ID) {
+
+                Step = malloc(sizeof(stepDevice));
+                Step->version.major = (desc.bcdDevice >> 8) & 0xFF;
+                Step->version.minor = desc.bcdDevice & 0xFF;
+
+                if (libusb_open(*dev, &Step->device) < 0) {
+                    return NULL;
+                }
+
+        } else {    
+            // Unref device that doesn't match
+            libusb_unref_device(*dev);
+        }
+    }
+
+    libusb_free_device_list(devs, 1);
     return Step;
+}
+
+// ----------------------------------------------------------------------------
+
+void device_close(stepDevice *Step) {
+    libusb_close(Step->device);
 }
 
 // ----------------------------------------------------------------------------
