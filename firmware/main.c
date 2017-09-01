@@ -341,8 +341,12 @@ int main(void) {
         wdt_reset();
         usbPoll();
 
-        // If a button change is detected, send appropriate scan code
-        if (buttonStateChanged) {
+        // Temporary
+        static uchar keyOut[NUM_KEYS] = {0};
+        uchar modOut = 0;
+        uchar sendScanCode = 0;
+
+        for (uchar i = 0; i < NUM_KEYS; i++) {
 
             buttonPoll(i);
 
@@ -350,19 +354,23 @@ int main(void) {
             if (buttonStateChanged[i]) {
 
                 if (buttonState[i]) {
+
                     // Press
                     keyOut[i] = savedKeys[i].scancode;
 
                     if (savedKeys[i].modifier != MOD_NONE) {
                         modOut |= savedKeys[i].modifier;
                     }
+
                 } else {
+
                     // Release, but only if a key was specified
                     if (savedKeys[i].scancode == 0) {
                         keyOut[i] = 0;
                     } else {
                         keyOut[i] = 0x80 | savedKeys[i].scancode;
                     }
+
                 }
 
                 // Reset debounce
@@ -370,11 +378,15 @@ int main(void) {
                 buttonStateChanged[i] = 0;
             }
 
-            usbSendScanCode(modOut, keyOut);
-
-            // Reset debounce
-            buttonStateChanged = 0;
         }
+
+        // If a change occurred, send scan code
+        if (sendScanCode) {
+            usbSendScanCode(modOut, keyOut);
+        }
+
+        // Poll timer
+        timerPoll();
 
     }
 
