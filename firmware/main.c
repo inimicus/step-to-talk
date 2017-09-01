@@ -47,8 +47,8 @@ const uchar             SW[3] = {IO_SW1, IO_SW2, IO_SW3};
 #define NUM_TOTAL_KEYS      NUM_KEYS * 2    // Each key + modifier
 #define SAVE_EEPROM_OFFSET  12              // Where to begin saving
 
-static uchar    buttonState[NUM_KEYS]   = {0};  // Store button states
-static uchar    buttonStateChanged      = 0;    // Button edge detect
+static uchar buttonState[NUM_KEYS]          = {0};  // Store button states
+static uchar buttonStateChanged[NUM_KEYS]   = {0};  // Button edge detect
 
 typedef struct {
     uint8_t modifier;
@@ -196,31 +196,24 @@ static void timerPoll(void) {
 
 static void buttonPoll(uchar key) {
 
-    static uchar debounceTimeIsOver;
-    static uchar debounceTimeout;
+    static uchar debounceTimeout[NUM_KEYS];
+    uchar tempButtonValue[NUM_KEYS];
 
-    uchar tempButtonValue = bit_is_clear(IO_PINS, SW[key]);
+    if (timeAfter(clockHundredths, debounceTimeout[key])) {
 
-    if (!debounceTimeIsOver) {
-
-        if (timeAfter(clockHundredths, debounceTimeout)) {
-            debounceTimeIsOver = 1;
-        }
-
-    } else {
+        tempButtonValue[key] = bit_is_clear(IO_PINS, SW[key]);
 
         // Trigger a change if status has changed and the debounce-delay is over,
         // this has good debounce rejection and latency but is subject to
         // false trigger on electrical noise
 
-        if (tempButtonValue != buttonState[key]) {
-            buttonState[key] = tempButtonValue;
-            buttonStateChanged = 1;
-
-            // Restart debounce timer
-            debounceTimeIsOver = 0;
-            debounceTimeout = clockHundredths + 5;
+        if (tempButtonValue[key] != buttonState[key]) {
+            buttonState[key] = tempButtonValue[key];
+            buttonStateChanged[key] = 1;
         }
+
+        // Restart debounce timer
+        debounceTimeout[key] = clockHundredths + 10;
     }
 
 }
@@ -358,7 +351,8 @@ int main(void) {
             uchar keyOut[NUM_KEYS] = {0};
             uchar modOut = 0;
 
-            for (uchar i = 0; i < NUM_KEYS; i++) {
+            // If a button change is detected, send appropriate scan code
+            if (buttonStateChanged[i]) {
 
                 if (buttonState[i]) {
                     // Press
@@ -375,6 +369,10 @@ int main(void) {
                         keyOut[i] = 0x80 | savedKeys[i].scancode;
                     }
                 }
+
+                // Reset debounce
+                sendScanCode |= buttonStateChanged[i];
+                buttonStateChanged[i] = 0;
             }
 
             usbSendScanCode(modOut, keyOut);
