@@ -111,9 +111,10 @@ PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 
 static void usbSendScanCode(uchar modifier, uchar keys[]) {
     reportBuffer[0] = modifier;
-    reportBuffer[1] = keys[0];
-    reportBuffer[2] = keys[1];
-    reportBuffer[3] = keys[2];
+
+    for (int i = 0; i < NUM_KEYS; i++) {
+        reportBuffer[i+1] = keys[i];
+    }
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
 }
@@ -336,20 +337,14 @@ int main(void) {
 
     for(;;) {
 
-        // Do all polls
+        // Do polls
         wdt_reset();
         usbPoll();
-        buttonPoll(0);
-        buttonPoll(1);
-        buttonPoll(2);
-        timerPoll();
 
         // If a button change is detected, send appropriate scan code
         if (buttonStateChanged) {
 
-            // Temporary
-            uchar keyOut[NUM_KEYS] = {0};
-            uchar modOut = 0;
+            buttonPoll(i);
 
             // If a button change is detected, send appropriate scan code
             if (buttonStateChanged[i]) {
