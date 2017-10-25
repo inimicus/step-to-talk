@@ -35,10 +35,7 @@
 
 #define IO_PORT         PORTB       // IO Register
 #define IO_PINS         PINB        // Inputs
-
-#define IO_SW1          PB0         //
-#define IO_SW2          PB1         // Switches
-#define IO_SW3          PB2         //
+#define IO_SW           PB1         // Switch
 
 const uchar             SW[3] = {IO_SW1, IO_SW2, IO_SW3};
 
