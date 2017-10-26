@@ -335,7 +335,7 @@ int main(void) {
                 keyOut = savedKey.scancode;
 
                 if (savedKey.modifier != MOD_NONE) {
-                    modOut |= savedKey.modifier;
+                    modOut = savedKey.modifier;
                 }
 
             } else {
