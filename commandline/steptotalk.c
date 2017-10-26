@@ -10,6 +10,7 @@
 //
 // Supported Models:
 //  - ST01
+//  - ST02
 //  - ST03
 //
 // This utility heavily modified and customized from the original Micronucleus
