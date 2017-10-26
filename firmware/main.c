@@ -347,9 +347,7 @@ int main(void) {
                     keyOut = 0x80 | savedKey.scancode;
                 }
 
-                if (savedKey.modifier != MOD_NONE) {
-                    modOut = 0x80 | savedKey.modifier;
-                }
+                modOut = MOD_NONE;
 
             }
 
