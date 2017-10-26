@@ -103,6 +103,19 @@ static void usbSendScanCode(uchar modifier, uchar key) {
 
 // ----------------------------------------------------------------------------
 
+static void sendKeyDown() {
+    usbSendScanCode(savedKey.modifier, savedKey.scancode);
+}
+
+// ----------------------------------------------------------------------------
+
+static void sendKeyUp() {
+    uchar keyOut = (savedKey.scancode == 0) ? 0 : 0x80 | savedKey.scancode;
+    usbSendScanCode(MOD_NONE, keyOut);
+}
+
+// ----------------------------------------------------------------------------
+
 static void loadKeysFromEeprom() {
 
     // Wait for EEPROM activity to stop
@@ -322,38 +335,17 @@ int main(void) {
         buttonPoll();
         timerPoll();
 
-        // Temporary
-        static uchar keyOut = 0;
-        uchar modOut = 0;
-
         // If a button change is detected, send appropriate scan code
         if (buttonStateChanged) {
 
             if (buttonState) {
-
-                // Press
-                keyOut = savedKey.scancode;
-
-                if (savedKey.modifier != MOD_NONE) {
-                    modOut = savedKey.modifier;
-                }
-
+                sendKeyDown();
             } else {
-
-                // Release, but only if a key was specified
-                if (savedKey.scancode == 0) {
-                    keyOut = 0;
-                } else {
-                    keyOut = 0x80 | savedKey.scancode;
-                }
-
-                modOut = MOD_NONE;
-
+                sendKeyUp();
             }
 
             // Reset debounce
             buttonStateChanged = 0;
-            usbSendScanCode(modOut, keyOut);
         }
 
     }
