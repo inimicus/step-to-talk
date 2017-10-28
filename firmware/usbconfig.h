@@ -364,7 +364,7 @@ section at the end of this file).
  * interrupt than INT0, you may have to define some of these.
  */
 #define USB_INTR_CFG            PCMSK
-#define USB_INTR_CFG_SET        (1 << PCINT3)
+#define USB_INTR_CFG_SET        (1 << USB_CFG_DPLUS_BIT)
 #define USB_INTR_CFG_CLR        0
 #define USB_INTR_ENABLE         GIMSK
 #define USB_INTR_ENABLE_BIT     PCIE
