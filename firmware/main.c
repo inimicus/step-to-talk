@@ -305,6 +305,8 @@ uchar usbFunctionSetup(uchar data[8]) {
 // ----------------------------------------------------------------------------
 
 void hadUsbReset(void) {
+    // Called from macro defined in usbconfig.h
+
     cli();
     calibrateOscillator();
     sei();
