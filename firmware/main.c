@@ -213,7 +213,7 @@ static void buttonPoll() {
         }
 
         // Restart debounce timer
-        debounceTimeout = clockHundredths + 10;
+        debounceTimeout = clockHundredths + 2;
     }
 
 }
