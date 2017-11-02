@@ -105,8 +105,6 @@ static void usbSendScanCode(uchar modifier, uchar key) {
 
 static void doKeyboard() {
 
-    uchar keyOut = (savedKey.scancode == 0) ? 0 : 0x80 | savedKey.scancode;
-
     // If a button change is detected, send appropriate scan code
     if (buttonStateChanged) {
 
