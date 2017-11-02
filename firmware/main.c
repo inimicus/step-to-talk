@@ -103,15 +103,23 @@ static void usbSendScanCode(uchar modifier, uchar key) {
 
 // ----------------------------------------------------------------------------
 
-static void sendKeyDown() {
-    usbSendScanCode(savedKey.modifier, savedKey.scancode);
-}
+static void doKeyboard() {
 
-// ----------------------------------------------------------------------------
-
-static void sendKeyUp() {
     uchar keyOut = (savedKey.scancode == 0) ? 0 : 0x80 | savedKey.scancode;
-    usbSendScanCode(MOD_NONE, keyOut);
+
+    // If a button change is detected, send appropriate scan code
+    if (buttonStateChanged) {
+
+        if (buttonState) {
+            usbSendScanCode(savedKey.modifier, savedKey.scancode);
+        } else {
+            usbSendScanCode(MOD_NONE, 0);
+        }
+
+        // Reset debounce
+        buttonStateChanged = 0;
+    }
+
 }
 
 // ----------------------------------------------------------------------------
@@ -329,24 +337,15 @@ int main(void) {
 
     for(;;) {
 
-        // Do polls
         wdt_reset();
+
+        // Do polls
         usbPoll();
         buttonPoll();
         timerPoll();
 
-        // If a button change is detected, send appropriate scan code
-        if (buttonStateChanged) {
-
-            if (buttonState) {
-                sendKeyDown();
-            } else {
-                sendKeyUp();
-            }
-
-            // Reset debounce
-            buttonStateChanged = 0;
-        }
+        // Do keyboard things
+        doKeyboard();
 
     }
 
