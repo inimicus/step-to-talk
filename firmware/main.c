@@ -222,6 +222,33 @@ static void buttonPoll() {
 // USB DRIVER INTERFACE
 // ============================================================================
 
+void usbSetup() {
+    uchar i;
+    uchar calibrationValue;
+
+    // Get calibration value from last time
+    calibrationValue = eeprom_read_byte(0);
+    if(calibrationValue != 0xff){
+        OSCCAL = calibrationValue;
+    }
+
+    usbInit();
+
+    // Enforce re-enumeration, do this while interrupts are disabled!
+    usbDeviceDisconnect();
+
+    // Fake USB disconnect for > 250 ms
+    i = 0;
+    while(--i) {
+        wdt_reset();
+        _delay_ms(1);
+    }
+
+    usbDeviceConnect();
+}
+
+// ----------------------------------------------------------------------------
+
 uchar usbFunctionSetup(uchar data[8]) {
 
     usbRequest_t *rq    = (void *)data;
@@ -292,59 +319,22 @@ void hadUsbReset(void) {
 // ============================================================================
 
 int main(void) {
-    uchar i;
-    uchar calibrationValue;
-
-    // USB SETUP --------------------------------------------------------------
-
-    // Get calibration value from last time
-    calibrationValue = eeprom_read_byte(0);
-    if(calibrationValue != 0xff){
-        OSCCAL = calibrationValue;
-    }
-
-    usbInit();
-
-    // Enforce re-enumeration, do this while interrupts are disabled!
-    usbDeviceDisconnect();
-
-    // Fake USB disconnect for > 250 ms
-    i = 0;
-    while(--i) {
-        wdt_reset();
-        _delay_ms(1);
-    }
-    usbDeviceConnect();
 
     // SYSTEM SETUP -----------------------------------------------------------
-
-    wdt_enable(WDTO_1S);
-
-    // Configure Pull-Ups
-    IO_PORT = 0;            // Clear all pull-ups
-    IO_PORT = _BV(IO_SW);   // Set switch pull-ups
-
-    timerInit();
-    sei();
-
-    // KEY SETUP --------------------------------------------------------------
-    
-    loadKeysFromEeprom();
+    usbSetup();             // Initialize and setup USB
+    wdt_enable(WDTO_1S);    // Enable watchdog timer
+    IO_PORT = 0;            // Clear all pull-ups - hardware pullups exist
+    timerInit();            // Prepare timer
+    sei();                  // Enable interrupts
+    loadKeysFromEeprom();   // Load saved keys from EEPROM
 
     // MAIN LOOP --------------------------------------------------------------
-
     for(;;) {
-
         wdt_reset();
-
-        // Do polls
         usbPoll();
         buttonPoll();
         timerPoll();
-
-        // Do keyboard things
         doKeyboard();
-
     }
 
     return 0;
