@@ -5171,86 +5171,6 @@ Used as a test point connection for pogo pins or other debugging tools.
 </deviceset>
 </devicesets>
 </library>
-<library name="NXP_60_26022015">
-<description>&lt;H1&gt;NXP Library&lt;/H1&gt;
-&lt;author&gt;marco.kuystermans@nxp.com&lt;/author&gt;&lt;p&gt;
-
-&lt;H2&gt;Disclaimer:&lt;/H2&gt;
-&lt;ul&gt;&lt;i&gt;&lt;li&gt;The information contained in this library is made available for general information and public access only. By using our 
-library, you accept this disclaimer in full. If you disagree with any part of this disclaimer, you must not use our library.
-Use of this library is permitted on the basis that NXP will not be liable for any loss or damage including without limitation, indirect or consequential loss or 
-damage, arising out of or in connection with the use of this library.&lt;/li&gt;
-&lt;li&gt;This library may be distributed and adapted freely for any purpose, as long as NXP is credited and any new creation is licensed under the same terms.&lt;/li&gt;
-
-&lt;H2&gt;Information:&lt;/H2&gt;
-&lt;ul&gt;&lt;li&gt;Footprints are according to NXP footprint information, see &lt;a href=http://www.nxp.com&gt;NXP website&lt;/a&gt;
-&lt;li&gt;SMD Footprints in this library are for reflow soldering only.
-&lt;li&gt;&lt;b&gt;Library is generated as a courtesy: Information is NOT guaranteed, use at your own risk&lt;/b&gt;
-&lt;li&gt;NXP package numbers (SOT/SOD) numbers used
-&lt;/ul&gt;
-Please send your comments to the mail address above.</description>
-<packages>
-<package name="SOD523">
-<description>&lt;li&gt;&lt;b&gt;SOD523&lt;/b&gt;&lt;hr&gt; &lt;ul&gt;&lt;li&gt;Plastic surface-mounted package; 2 leads&lt;li&gt;&lt;u&gt;JEDEC&lt;/u&gt;: -- &lt;li&gt;&lt;u&gt;IEC&lt;/u&gt;: -- &lt;li&gt;&lt;u&gt;JEITA&lt;/u&gt;: SC-79&lt;/ul&gt;</description>
-<wire x1="0.6" y1="0.4" x2="0.6" y2="-0.4" width="0.127" layer="51"/>
-<wire x1="-0.6" y1="0.4" x2="-0.6" y2="-0.4" width="0.127" layer="51"/>
-<wire x1="-0.6" y1="0.4" x2="0.6" y2="0.4" width="0.127" layer="51"/>
-<wire x1="0.6" y1="-0.4" x2="-0.6" y2="-0.4" width="0.127" layer="51"/>
-<wire x1="-0.2" y1="0.2" x2="-0.2" y2="-0.2" width="0.127" layer="51"/>
-<wire x1="-0.2" y1="-0.2" x2="0.2" y2="0" width="0.127" layer="51"/>
-<wire x1="0.2" y1="0" x2="-0.2" y2="0.2" width="0.127" layer="51"/>
-<wire x1="0.2" y1="0.2" x2="0.2" y2="0" width="0.127" layer="51"/>
-<wire x1="0.2" y1="0" x2="0.2" y2="-0.2" width="0.127" layer="51"/>
-<smd name="2" x="-0.55" y="0" dx="0.7" dy="0.5" layer="1"/>
-<smd name="1" x="0.55" y="0" dx="0.7" dy="0.5" layer="1"/>
-<text x="1.5" y="0.5" size="1" layer="25" font="vector">&gt;NAME</text>
-<text x="1.5" y="-1" size="1" layer="27" font="vector">&gt;VALUE</text>
-<rectangle x1="-0.8" y1="-0.15" x2="-0.6" y2="0.15" layer="51"/>
-<rectangle x1="0.6" y1="-0.15" x2="0.8" y2="0.15" layer="51"/>
-</package>
-</packages>
-<symbols>
-<symbol name="DIODE_ESD">
-<wire x1="-1.27" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="-1.27" y1="1.27" x2="-1.27" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="-1.27" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
-<text x="-2.286" y="1.905" size="1.778" layer="95" font="vector">&gt;NAME</text>
-<text x="-2.286" y="-3.429" size="1.778" layer="96" font="vector">&gt;VALUE</text>
-<pin name="A" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
-<pin name="K" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="PESD5V0X1UB" prefix="D">
-<description>&lt;H2&gt;Ultra low capacitance unidirectional ESD protection diode&lt;/H2&gt;
-Ultra low capacitance unidirectional ElectroStatic Discharge (ESD) protection diode in a 
-SOD523 (SC-79) ultra small and flat lead Surface-Mounted Device (SMD) plastic 
-package designed to protect one signal line from the damage caused by ESD and other 
-transients.
-The combination of extremely low capacitance and ultra low clamping voltage makes the 
-device ideal for high-speed data line protection applications.
-&lt;p&gt;&lt;author&gt;AAL Eindhoven MK&lt;/author&gt;&lt;hr&gt;&lt;p&gt;
- &lt;img src="http://www.nxp.com/img/NXP_logo.png"&gt;</description>
-<gates>
-<gate name="G$1" symbol="DIODE_ESD" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="SOD523">
-<connects>
-<connect gate="G$1" pin="A" pad="2"/>
-<connect gate="G$1" pin="K" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="atmel" urn="urn:adsk.eagle:library:105">
 <description>&lt;b&gt;AVR Devices&lt;/b&gt;&lt;p&gt;
 Configurable logic, microcontrollers, nonvolatile memories&lt;p&gt;
@@ -5688,6 +5608,89 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="gjennings">
+<packages>
+<package name="SOD523-ENLARGED">
+<wire x1="0.6" y1="0.4" x2="0.6" y2="-0.4" width="0.127" layer="51"/>
+<wire x1="-0.6" y1="0.4" x2="-0.6" y2="-0.4" width="0.127" layer="51"/>
+<wire x1="-0.6" y1="0.4" x2="0.6" y2="0.4" width="0.127" layer="51"/>
+<wire x1="0.6" y1="-0.4" x2="-0.6" y2="-0.4" width="0.127" layer="51"/>
+<wire x1="-0.2" y1="0.2" x2="-0.2" y2="-0.2" width="0.127" layer="51"/>
+<wire x1="-0.2" y1="-0.2" x2="0.2" y2="0" width="0.127" layer="51"/>
+<wire x1="0.2" y1="0" x2="-0.2" y2="0.2" width="0.127" layer="51"/>
+<wire x1="0.2" y1="0.2" x2="0.2" y2="0" width="0.127" layer="51"/>
+<wire x1="0.2" y1="0" x2="0.2" y2="-0.2" width="0.127" layer="51"/>
+<smd name="2" x="-0.75" y="0" dx="0.7" dy="0.8" layer="1"/>
+<smd name="1" x="0.75" y="0" dx="0.7" dy="0.8" layer="1"/>
+<text x="1.5" y="0.5" size="1" layer="25" font="vector">&gt;NAME</text>
+<text x="1.5" y="-1" size="1" layer="27" font="vector">&gt;VALUE</text>
+<rectangle x1="-0.8" y1="-0.15" x2="-0.6" y2="0.15" layer="51"/>
+<rectangle x1="0.6" y1="-0.15" x2="0.8" y2="0.15" layer="51"/>
+<wire x1="1.5" y1="0.5" x2="1.5" y2="-0.5" width="0.127" layer="21"/>
+</package>
+<package name="SOD523">
+<description>&lt;li&gt;&lt;b&gt;SOD523&lt;/b&gt;&lt;hr&gt; &lt;ul&gt;&lt;li&gt;Plastic surface-mounted package; 2 leads&lt;li&gt;&lt;u&gt;JEDEC&lt;/u&gt;: -- &lt;li&gt;&lt;u&gt;IEC&lt;/u&gt;: -- &lt;li&gt;&lt;u&gt;JEITA&lt;/u&gt;: SC-79&lt;/ul&gt;</description>
+<wire x1="0.6" y1="0.4" x2="0.6" y2="-0.4" width="0.127" layer="51"/>
+<wire x1="-0.6" y1="0.4" x2="-0.6" y2="-0.4" width="0.127" layer="51"/>
+<wire x1="-0.6" y1="0.4" x2="0.6" y2="0.4" width="0.127" layer="51"/>
+<wire x1="0.6" y1="-0.4" x2="-0.6" y2="-0.4" width="0.127" layer="51"/>
+<wire x1="-0.2" y1="0.2" x2="-0.2" y2="-0.2" width="0.127" layer="51"/>
+<wire x1="-0.2" y1="-0.2" x2="0.2" y2="0" width="0.127" layer="51"/>
+<wire x1="0.2" y1="0" x2="-0.2" y2="0.2" width="0.127" layer="51"/>
+<wire x1="0.2" y1="0.2" x2="0.2" y2="0" width="0.127" layer="51"/>
+<wire x1="0.2" y1="0" x2="0.2" y2="-0.2" width="0.127" layer="51"/>
+<smd name="2" x="-0.55" y="0" dx="0.7" dy="0.5" layer="1"/>
+<smd name="1" x="0.55" y="0" dx="0.7" dy="0.5" layer="1"/>
+<text x="1.5" y="0.5" size="1" layer="25" font="vector">&gt;NAME</text>
+<text x="1.5" y="-1" size="1" layer="27" font="vector">&gt;VALUE</text>
+<rectangle x1="-0.8" y1="-0.15" x2="-0.6" y2="0.15" layer="51"/>
+<rectangle x1="0.6" y1="-0.15" x2="0.8" y2="0.15" layer="51"/>
+</package>
+</packages>
+<symbols>
+<symbol name="DIODE_ZENER">
+<wire x1="-1.27" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="1.27" x2="-1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-1.27" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
+<text x="-2.286" y="1.905" size="1.778" layer="95" font="vector">&gt;NAME</text>
+<text x="-2.286" y="-3.429" size="1.778" layer="96" font="vector">&gt;VALUE</text>
+<pin name="A" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
+<pin name="K" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
+<wire x1="2.032" y1="1.27" x2="1.397" y2="1.27" width="0.254" layer="94"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="BZT52C3V6T" prefix="Z">
+<description>&lt;H2&gt;Surface Mount Zener Diode&lt;/H2&gt;</description>
+<gates>
+<gate name="G$1" symbol="DIODE_ZENER" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOD523">
+<connects>
+<connect gate="G$1" pin="A" pad="2"/>
+<connect gate="G$1" pin="K" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="ENLARGED" package="SOD523-ENLARGED">
+<connects>
+<connect gate="G$1" pin="A" pad="2"/>
+<connect gate="G$1" pin="K" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -5700,13 +5703,13 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <parts>
 <part name="C1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="C-US" device="C0603" value="0.1µF"/>
 <part name="R1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="22KΩ"/>
-<part name="R2" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="68Ω"/>
 <part name="R3" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="68Ω"/>
+<part name="R2" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="68Ω"/>
 <part name="R4" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="2.2KΩ"/>
 <part name="SUPPLY1" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="VCC" device=""/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="Z1" library="NXP_60_26022015" deviceset="PESD5V0X1UB" device="" value="3.6V"/>
-<part name="Z2" library="NXP_60_26022015" deviceset="PESD5V0X1UB" device="" value="3.6V"/>
+<part name="Z2" library="gjennings" deviceset="BZT52C3V6T" device="ENLARGED" value="3.6V"/>
+<part name="Z1" library="gjennings" deviceset="BZT52C3V6T" device="ENLARGED" value="3.6V"/>
 <part name="SUPPLY3" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="VCC" device=""/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -5714,13 +5717,13 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <part name="SUPPLY4" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="VCC" device=""/>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U1" library="atmel" library_urn="urn:adsk.eagle:library:105" deviceset="TINY22" device="S" value="ATTINY85"/>
-<part name="R5" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="10KΩ"/>
+<part name="R6" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="10KΩ"/>
 <part name="USB" library="SparkFun-Connectors" deviceset="USB_MICRO-B" device="_SMT"/>
 <part name="SUPPLY5" library="supply2" library_urn="urn:adsk.eagle:library:372" deviceset="VCC" device=""/>
-<part name="R6" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="200Ω"/>
+<part name="R5" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0603" value="200Ω"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="SW1" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="87438-02" device="" value=""/>
+<part name="SW" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="87438-02" device="" value=""/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="H2" library="holes" library_urn="urn:adsk.eagle:library:237" deviceset="MOUNT-PAD-ROUND" device="4.3" value="Mounting Pad"/>
 <part name="J1" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="Pogo Pad"/>
@@ -5744,13 +5747,13 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <instances>
 <instance part="C1" gate="G$1" x="-43.18" y="33.02"/>
 <instance part="R1" gate="G$1" x="-35.56" y="45.72"/>
-<instance part="R2" gate="G$1" x="43.18" y="53.34"/>
-<instance part="R3" gate="G$1" x="43.18" y="45.72"/>
+<instance part="R3" gate="G$1" x="43.18" y="53.34"/>
+<instance part="R2" gate="G$1" x="43.18" y="45.72"/>
 <instance part="R4" gate="G$1" x="50.8" y="63.5" rot="R90"/>
 <instance part="SUPPLY1" gate="G$1" x="-43.18" y="73.66"/>
 <instance part="GND1" gate="1" x="-43.18" y="22.86"/>
-<instance part="Z1" gate="G$1" x="50.8" y="35.56" rot="R90"/>
-<instance part="Z2" gate="G$1" x="60.96" y="35.56" rot="R90"/>
+<instance part="Z2" gate="G$1" x="50.8" y="35.56" rot="R90"/>
+<instance part="Z1" gate="G$1" x="60.96" y="35.56" rot="R90"/>
 <instance part="SUPPLY3" gate="G$1" x="50.8" y="73.66"/>
 <instance part="GND2" gate="1" x="60.96" y="22.86"/>
 <instance part="GND3" gate="1" x="50.8" y="22.86"/>
@@ -5758,14 +5761,14 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <instance part="SUPPLY4" gate="G$1" x="66.04" y="73.66"/>
 <instance part="GND5" gate="1" x="33.02" y="22.86" rot="MR0"/>
 <instance part="U1" gate="G$1" x="-7.62" y="40.64"/>
-<instance part="R5" gate="G$1" x="33.02" y="63.5" rot="R90"/>
+<instance part="R6" gate="G$1" x="33.02" y="63.5" rot="R90"/>
 <instance part="USB" gate="G$1" x="73.66" y="50.8"/>
 <instance part="SUPPLY5" gate="G$1" x="33.02" y="73.66"/>
-<instance part="R6" gate="G$1" x="25.4" y="38.1"/>
+<instance part="R5" gate="G$1" x="25.4" y="38.1"/>
 <instance part="GND6" gate="1" x="83.82" y="22.86"/>
 <instance part="GND7" gate="1" x="-27.94" y="22.86"/>
-<instance part="SW1" gate="-1" x="38.1" y="30.48"/>
-<instance part="SW1" gate="-2" x="38.1" y="27.94"/>
+<instance part="SW" gate="-1" x="38.1" y="30.48"/>
+<instance part="SW" gate="-2" x="38.1" y="27.94"/>
 <instance part="GND8" gate="1" x="-7.62" y="63.5"/>
 <instance part="H2" gate="G$1" x="-2.54" y="68.58"/>
 <instance part="J1" gate="G$1" x="-2.54" y="2.54"/>
@@ -5787,12 +5790,12 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <wire x1="-43.18" y1="27.94" x2="-43.18" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="Z1" gate="G$1" pin="A"/>
+<pinref part="Z2" gate="G$1" pin="A"/>
 <wire x1="50.8" y1="33.02" x2="50.8" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="GND3" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="Z2" gate="G$1" pin="A"/>
+<pinref part="Z1" gate="G$1" pin="A"/>
 <wire x1="60.96" y1="33.02" x2="60.96" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="GND2" gate="1" pin="GND"/>
 </segment>
@@ -5800,7 +5803,7 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <wire x1="35.56" y1="27.94" x2="33.02" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="27.94" x2="33.02" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="GND5" gate="1" pin="GND"/>
-<pinref part="SW1" gate="-2" pin="S"/>
+<pinref part="SW" gate="-2" pin="S"/>
 </segment>
 <segment>
 <pinref part="USB" gate="G$1" pin="GND"/>
@@ -5852,7 +5855,7 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <wire x1="50.8" y1="68.58" x2="50.8" y2="71.12" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="R5" gate="G$1" pin="2"/>
+<pinref part="R6" gate="G$1" pin="2"/>
 <pinref part="SUPPLY5" gate="G$1" pin="VCC"/>
 <wire x1="33.02" y1="68.58" x2="33.02" y2="71.12" width="0.1524" layer="91"/>
 </segment>
@@ -5870,9 +5873,9 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 </net>
 <net name="D-" class="0">
 <segment>
-<pinref part="R2" gate="G$1" pin="2"/>
+<pinref part="R3" gate="G$1" pin="2"/>
 <wire x1="48.26" y1="53.34" x2="50.8" y2="53.34" width="0.1524" layer="91"/>
-<pinref part="Z1" gate="G$1" pin="K"/>
+<pinref part="Z2" gate="G$1" pin="K"/>
 <wire x1="50.8" y1="53.34" x2="50.8" y2="38.1" width="0.1524" layer="91"/>
 <junction x="50.8" y="53.34"/>
 <pinref part="R4" gate="G$1" pin="1"/>
@@ -5883,9 +5886,9 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 </net>
 <net name="D+" class="0">
 <segment>
-<pinref part="R3" gate="G$1" pin="2"/>
+<pinref part="R2" gate="G$1" pin="2"/>
 <wire x1="48.26" y1="45.72" x2="60.96" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="Z2" gate="G$1" pin="K"/>
+<pinref part="Z1" gate="G$1" pin="K"/>
 <wire x1="60.96" y1="45.72" x2="60.96" y2="38.1" width="0.1524" layer="91"/>
 <pinref part="USB" gate="G$1" pin="D+"/>
 <wire x1="68.58" y1="50.8" x2="60.96" y2="50.8" width="0.1524" layer="91"/>
@@ -5896,13 +5899,13 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <net name="N$4" class="0">
 <segment>
 <wire x1="33.02" y1="30.48" x2="35.56" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="R5" gate="G$1" pin="1"/>
+<pinref part="R6" gate="G$1" pin="1"/>
 <wire x1="33.02" y1="30.48" x2="33.02" y2="38.1" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="2"/>
+<pinref part="R5" gate="G$1" pin="2"/>
 <wire x1="33.02" y1="38.1" x2="33.02" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="30.48" y1="38.1" x2="33.02" y2="38.1" width="0.1524" layer="91"/>
 <junction x="33.02" y="38.1"/>
-<pinref part="SW1" gate="-1" pin="S"/>
+<pinref part="SW" gate="-1" pin="S"/>
 </segment>
 </net>
 <net name="RST" class="0">
@@ -5924,7 +5927,7 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 </net>
 <net name="N$2" class="0">
 <segment>
-<pinref part="R2" gate="G$1" pin="1"/>
+<pinref part="R3" gate="G$1" pin="1"/>
 <wire x1="38.1" y1="53.34" x2="12.7" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="53.34" x2="12.7" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="PB4"/>
@@ -5933,7 +5936,7 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 </net>
 <net name="MOSI" class="0">
 <segment>
-<pinref part="R3" gate="G$1" pin="1"/>
+<pinref part="R2" gate="G$1" pin="1"/>
 <wire x1="38.1" y1="45.72" x2="17.78" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="17.78" y1="45.72" x2="17.78" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="(MOSI)PB0"/>
@@ -5970,7 +5973,7 @@ Source: http://www.molex.com/product/micro/87438.html</description>
 <label x="-7.62" y="2.54" size="1.778" layer="95" rot="MR0" xref="yes"/>
 </segment>
 <segment>
-<pinref part="R6" gate="G$1" pin="1"/>
+<pinref part="R5" gate="G$1" pin="1"/>
 <pinref part="U1" gate="G$1" pin="(MISO)PB1"/>
 <wire x1="20.32" y1="38.1" x2="15.24" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="15.24" y1="38.1" x2="10.16" y2="38.1" width="0.1524" layer="91"/>
