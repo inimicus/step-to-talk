@@ -1,0 +1,8 @@
+# Ignore generated jig gerbers
+hardware/jig/*/*.ger
+hardware/jig/*/*.xln
+
+# Ignore generated board gerbers
+hardware/board/*.ger
+hardware/board/*.xln
+
