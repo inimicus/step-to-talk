@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.4.2">
+<eagle version="8.5.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -143,7 +143,7 @@
 </layers>
 <schematic xreflabel="%F%N/%S.%C%R" xrefpart="/%S.%C%R">
 <libraries>
-<library name="SparkFun-Connectors" urn="urn:adsk.eagle:library:513">
+<library name="SparkFun-Connectors">
 <description>&lt;h3&gt;SparkFun Connectors&lt;/h3&gt;
 This library contains electrically-functional connectors. 
 &lt;br&gt;
@@ -158,7 +158,53 @@ We've spent an enormous amount of time creating and checking these footprints an
 &lt;br&gt;
 You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
 <packages>
-<package name="2X3-SHROUDED" urn="urn:adsk.eagle:footprint:37928/1" library_version="1">
+<package name="2X3_POGO">
+<description>&lt;h3&gt;Plated Through Hole - 2x3 Pogo Pins&lt;/h3&gt;
+&lt;p&gt;Specifications:
+&lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
+&lt;li&gt;Pin pitch:0.1"&lt;/li&gt;
+&lt;/ul&gt;&lt;/p&gt;
+&lt;p&gt;Example device(s):
+&lt;ul&gt;&lt;li&gt;CONN_03x2&lt;/li&gt;
+&lt;/ul&gt;&lt;/p&gt;</description>
+<pad name="P$1" x="0" y="0" drill="1.35" diameter="1.8288"/>
+<pad name="P$3" x="2.54" y="0" drill="1.35" diameter="1.8288"/>
+<pad name="P$5" x="5.08" y="0" drill="1.35" diameter="1.8288"/>
+<pad name="P$6" x="5.08" y="2.54" drill="1.35" diameter="1.8288"/>
+<pad name="P$4" x="2.54" y="2.54" drill="1.35" diameter="1.8288"/>
+<pad name="P$2" x="0" y="2.54" drill="1.35" diameter="1.8288"/>
+<wire x1="-0.635" y1="1.27" x2="-1.27" y2="1.905" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="1.905" x2="-1.27" y2="3.175" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="3.175" x2="-0.635" y2="3.81" width="0.2032" layer="21"/>
+<wire x1="-0.635" y1="3.81" x2="0.635" y2="3.81" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="3.81" x2="1.27" y2="3.175" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="3.175" x2="1.905" y2="3.81" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="3.81" x2="3.175" y2="3.81" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="3.81" x2="3.81" y2="3.175" width="0.2032" layer="21"/>
+<wire x1="3.81" y1="3.175" x2="4.445" y2="3.81" width="0.2032" layer="21"/>
+<wire x1="4.445" y1="3.81" x2="5.715" y2="3.81" width="0.2032" layer="21"/>
+<wire x1="5.715" y1="3.81" x2="6.35" y2="3.175" width="0.2032" layer="21"/>
+<wire x1="6.35" y1="3.175" x2="6.35" y2="1.905" width="0.2032" layer="21"/>
+<wire x1="6.35" y1="1.905" x2="5.715" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="5.715" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="6.35" y1="0.635" x2="6.35" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="6.35" y1="-0.635" x2="5.715" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="5.715" y1="-1.27" x2="4.445" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="4.445" y1="-1.27" x2="3.81" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="-0.635" y1="-1.27" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-0.635" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="-1.27" y1="3.175" x2="-0.635" y2="3.81" width="0.2032" layer="21"/>
+<text x="-1.27" y="4.064" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
+<text x="-1.27" y="-2.413" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
+</package>
+<package name="2X3-SHROUDED">
 <description>&lt;h3&gt;Plated Through Hole - 2x3 Shrouded Header&lt;/h3&gt;
 &lt;p&gt;Specifications:
 &lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
@@ -182,8 +228,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="-3" y1="-2.2" x2="-4.5" y2="-2.2" width="0.2032" layer="21"/>
 <wire x1="-3.4" y1="6.46" x2="-3.4" y2="2.2" width="0.2032" layer="51"/>
 <wire x1="-3.4" y1="-6.46" x2="-3.4" y2="-2.2" width="0.2032" layer="51"/>
-<wire x1="-2.648" y1="3.175" x2="-2.648" y2="1.905" width="0.2032" layer="21"/>
-<wire x1="-2.686" y1="3.175" x2="-2.686" y2="1.905" width="0.2032" layer="22"/>
 <pad name="1" x="-1.27" y="2.54" drill="1.016" diameter="1.8796" rot="R270"/>
 <pad name="2" x="1.27" y="2.54" drill="1.016" diameter="1.8796" rot="R270"/>
 <pad name="3" x="-1.27" y="0" drill="1.016" diameter="1.8796" rot="R270"/>
@@ -200,8 +244,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <rectangle x1="1.016" y1="-2.794" x2="1.524" y2="-2.286" layer="51"/>
 <text x="-3.81" y="7.874" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-3.81" y="-8.382" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
+<wire x1="-2.648" y1="3.175" x2="-2.648" y2="1.905" width="0.2032" layer="21"/>
+<wire x1="-2.686" y1="3.175" x2="-2.686" y2="1.905" width="0.2032" layer="22"/>
 </package>
-<package name="2X3_SMT_POSTS" urn="urn:adsk.eagle:footprint:37929/1" library_version="1">
+<package name="2X3_SMT_POSTS">
 <description>&lt;h3&gt;Surface Mount - 2x3 Male Header with Keying Posts&lt;/h3&gt;
 &lt;p&gt;Specifications:
 &lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
@@ -233,57 +279,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <text x="-1.397" y="4.445" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-1.778" y="-5.08" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
 </package>
-<package name="2X3_POGO" urn="urn:adsk.eagle:footprint:37930/1" library_version="1">
-<description>&lt;h3&gt;Plated Through Hole - 2x3 Pogo Pins&lt;/h3&gt;
-&lt;p&gt;Specifications:
-&lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
-&lt;li&gt;Pin pitch:0.1"&lt;/li&gt;
-&lt;/ul&gt;&lt;/p&gt;
-&lt;p&gt;Example device(s):
-&lt;ul&gt;&lt;li&gt;CONN_03x2&lt;/li&gt;
-&lt;/ul&gt;&lt;/p&gt;</description>
-<pad name="P$1" x="0" y="0" drill="1.2" diameter="1.8288"/>
-<pad name="P$3" x="2.54" y="0" drill="1.2" diameter="1.8288"/>
-<pad name="P$5" x="5.08" y="0" drill="1.2" diameter="1.8288"/>
-<pad name="P$6" x="5.08" y="2.54" drill="1.2" diameter="1.8288"/>
-<pad name="P$4" x="2.54" y="2.54" drill="1.2" diameter="1.8288"/>
-<pad name="P$2" x="0" y="2.54" drill="1.2" diameter="1.8288"/>
-<wire x1="-0.635" y1="1.27" x2="-1.27" y2="1.905" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="1.905" x2="-1.27" y2="3.175" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="3.175" x2="-0.635" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="3.81" x2="0.635" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="3.81" x2="1.27" y2="3.175" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="3.175" x2="1.905" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="1.905" y1="3.81" x2="3.175" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="3.175" y1="3.81" x2="3.81" y2="3.175" width="0.2032" layer="21"/>
-<wire x1="3.81" y1="3.175" x2="4.445" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="4.445" y1="3.81" x2="5.715" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="5.715" y1="3.81" x2="6.35" y2="3.175" width="0.2032" layer="21"/>
-<wire x1="6.35" y1="3.175" x2="6.35" y2="1.905" width="0.2032" layer="21"/>
-<wire x1="6.35" y1="1.905" x2="5.715" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="5.715" y1="1.27" x2="6.35" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="6.35" y1="0.635" x2="6.35" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="6.35" y1="-0.635" x2="5.715" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="5.715" y1="-1.27" x2="4.445" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="4.445" y1="-1.27" x2="3.81" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="3.81" y1="-0.635" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="3.175" y1="-1.27" x2="1.905" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="1.905" y1="-1.27" x2="1.27" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="-1.27" x2="-1.27" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="-0.635" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="0.635" x2="-0.635" y2="1.27" width="0.2032" layer="21"/>
-<wire x1="1.27" y1="2.54" x2="1.27" y2="0" width="0.2032" layer="21"/>
-<wire x1="3.81" y1="2.54" x2="3.81" y2="0" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="-1.651" x2="0.635" y2="-1.651" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
-<wire x1="-1.27" y1="3.175" x2="-0.635" y2="3.81" width="0.2032" layer="21"/>
-<wire x1="0.635" y1="-1.651" x2="-0.635" y2="-1.651" width="0.2032" layer="22"/>
-<text x="-1.27" y="4.064" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
-<text x="-1.27" y="-2.413" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
-</package>
-<package name="2X3" urn="urn:adsk.eagle:footprint:37608/1" library_version="1">
+<package name="2X3">
 <description>&lt;h3&gt;Plated Through Hole - 2x3&lt;/h3&gt;
 &lt;p&gt;Specifications:
 &lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
@@ -315,7 +311,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="1.905" y1="-1.27" x2="3.175" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="-0.635" y1="-1.27" x2="0.635" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="0.635" y1="-1.605" x2="-0.635" y2="-1.605" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="-1.605" x2="0.635" y2="-1.605" width="0.2032" layer="22"/>
 <pad name="1" x="0" y="0" drill="1.016" diameter="1.8796"/>
 <pad name="2" x="0" y="2.54" drill="1.016" diameter="1.8796"/>
 <pad name="3" x="2.54" y="0" drill="1.016" diameter="1.8796"/>
@@ -330,8 +325,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
 <rectangle x1="4.826" y1="2.286" x2="5.334" y2="2.794" layer="51"/>
 <rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
+<wire x1="-0.635" y1="-1.605" x2="0.635" y2="-1.605" width="0.2032" layer="22"/>
 </package>
-<package name="2X3-NS" urn="urn:adsk.eagle:footprint:37609/1" library_version="1">
+<package name="2X3-NS">
 <description>&lt;h3&gt;Plated Through Hole - 2x3 No Silk Outline&lt;/h3&gt;
 &lt;p&gt;Specifications:
 &lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
@@ -378,7 +374,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <text x="-3.81" y="2.667" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-3.81" y="-3.937" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
 </package>
-<package name="2X3_SMD" urn="urn:adsk.eagle:footprint:37931/1" library_version="1">
+<package name="2X3_SMD">
 <description>&lt;h3&gt;Surface Mount - 2x3&lt;/h3&gt;
 &lt;p&gt;Specifications:
 &lt;ul&gt;&lt;li&gt;Pin count:6&lt;/li&gt;
@@ -397,7 +393,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="-3.81" y1="2.5" x2="3.81" y2="2.5" width="0.127" layer="51"/>
 <wire x1="3.81" y1="2.5" x2="3.81" y2="-2.5" width="0.127" layer="51"/>
 <wire x1="3.81" y1="-2.5" x2="-3.81" y2="-2.5" width="0.127" layer="51"/>
-<wire x1="-3.302" y1="-3.683" x2="-3.302" y2="-2.794" width="0.127" layer="21"/>
 <rectangle x1="-0.3" y1="2.55" x2="0.3" y2="3.35" layer="51"/>
 <rectangle x1="-2.84" y1="2.55" x2="-2.24" y2="3.35" layer="51"/>
 <rectangle x1="2.24" y1="2.55" x2="2.84" y2="3.35" layer="51"/>
@@ -412,74 +407,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <smd name="6" x="2.54" y="2.85" dx="1.02" dy="1.9" layer="1"/>
 <text x="-1.397" y="4.191" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-1.778" y="-4.826" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
+<wire x1="-3.302" y1="-3.683" x2="-3.302" y2="-2.794" width="0.127" layer="21"/>
 </package>
 </packages>
-<packages3d>
-<package3d name="2X3-SHROUDED" urn="urn:adsk.eagle:package:38264/1" type="box" library_version="1">
-<description>Plated Through Hole - 2x3 Shrouded Header
-Specifications:
-Pin count:6
-Pin pitch:0.1"
-
-Datasheet referenced for footprint
-Example device(s):
-CONN_03x2
-</description>
-</package3d>
-<package3d name="2X3_SMT_POSTS" urn="urn:adsk.eagle:package:38271/1" type="box" library_version="1">
-<description>Surface Mount - 2x3 Male Header with Keying Posts
-Specifications:
-Pin count:6
-Pin pitch:0.1"
-
-Datasheet referenced for footprint
-Example device(s):
-CONN_03x2
-</description>
-</package3d>
-<package3d name="2X3_POGO" urn="urn:adsk.eagle:package:38265/1" type="box" library_version="1">
-<description>Plated Through Hole - 2x3 Pogo Pins
-Specifications:
-Pin count:6
-Pin pitch:0.1"
-
-Example device(s):
-CONN_03x2
-</description>
-</package3d>
-<package3d name="2X3" urn="urn:adsk.eagle:package:38016/1" type="box" library_version="1">
-<description>Plated Through Hole - 2x3
-Specifications:
-Pin count:6
-Pin pitch:0.1"
-
-Example device(s):
-CONN_03x2
-</description>
-</package3d>
-<package3d name="2X3-NS" urn="urn:adsk.eagle:package:38013/1" type="box" library_version="1">
-<description>Plated Through Hole - 2x3 No Silk Outline
-Specifications:
-Pin count:6
-Pin pitch:0.1"
-
-Example device(s):
-CONN_03x2
-</description>
-</package3d>
-<package3d name="2X3_SMD" urn="urn:adsk.eagle:package:38267/1" type="box" library_version="1">
-<description>Surface Mount - 2x3
-Specifications:
-Pin count:6
-Pin pitch:2.54mm
-
-Example device(s):
-CONN_03x2
-</description>
-</package3d>
-</packages3d>
 <symbols>
-<symbol name="CONN_03X2" urn="urn:adsk.eagle:symbol:37927/1" library_version="1">
+<symbol name="CONN_03X2">
 <description>&lt;h3&gt;6 Pin Connection&lt;/h3&gt;
 3x2 pin layout</description>
 <pin name="1" x="-7.62" y="2.54" visible="pad" length="middle"/>
@@ -503,7 +435,7 @@ CONN_03x2
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="CONN_03X2" urn="urn:adsk.eagle:component:38378/1" prefix="J" uservalue="yes" library_version="1">
+<deviceset name="CONN_03X2" prefix="J" uservalue="yes">
 <description>&lt;h3&gt;Multi connection point. Often used as Generic Header-pin footprint for 0.1 inch spaced/style header connections&lt;/h3&gt;
 
 &lt;p&gt;&lt;/p&gt;
@@ -545,9 +477,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="5"/>
 <connect gate="G$1" pin="6" pad="6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38264/1"/>
-</package3dinstances>
 <technologies>
 <technology name="">
 <attribute name="PROD_ID" value="CONN-10681"/>
@@ -564,9 +493,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="5"/>
 <connect gate="G$1" pin="6" pad="6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38271/1"/>
-</package3dinstances>
 <technologies>
 <technology name="">
 <attribute name="PROD_ID" value="CONN-11415"/>
@@ -582,9 +508,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="P$5"/>
 <connect gate="G$1" pin="6" pad="P$6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38265/1"/>
-</package3dinstances>
 <technologies>
 <technology name="">
 <attribute name="PROD_ID" value="HW-11044"/>
@@ -600,9 +523,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="5"/>
 <connect gate="G$1" pin="6" pad="6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38016/1"/>
-</package3dinstances>
 <technologies>
 <technology name="">
 <attribute name="PROD_ID" value="CONN-09701"/>
@@ -618,9 +538,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="5"/>
 <connect gate="G$1" pin="6" pad="6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38013/1"/>
-</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -634,9 +551,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="5"/>
 <connect gate="G$1" pin="6" pad="6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38267/1"/>
-</package3dinstances>
 <technologies>
 <technology name="">
 <attribute name="PROD_ID" value="CONN-11290"/>
@@ -652,9 +566,6 @@ CONN_03x2
 <connect gate="G$1" pin="5" pad="5"/>
 <connect gate="G$1" pin="6" pad="6"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38016/1"/>
-</package3dinstances>
 <technologies>
 <technology name="">
 <attribute name="PROD_ID" value="CONN-11566"/>
@@ -676,7 +587,7 @@ CONN_03x2
 </class>
 </classes>
 <parts>
-<part name="J7" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="CONN_03X2" device="POGO_PINS" package3d_urn="urn:adsk.eagle:package:38265/1"/>
+<part name="J7" library="SparkFun-Connectors" deviceset="CONN_03X2" device="POGO_PINS"/>
 </parts>
 <sheets>
 <sheet>
@@ -693,21 +604,4 @@ CONN_03x2
 </sheets>
 </schematic>
 </drawing>
-<compatibility>
-<note version="8.2" severity="warning">
-Since Version 8.2, EAGLE supports online libraries. The ids
-of those online libraries will not be understood (or retained)
-with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports URNs for individual library
-assets (packages, symbols, and devices). The URNs of those assets
-will not be understood (or retained) with this version.
-</note>
-<note version="8.3" severity="warning">
-Since Version 8.3, EAGLE supports the association of 3D packages
-with devices in libraries, schematics, and board files. Those 3D
-packages will not be understood (or retained) with this version.
-</note>
-</compatibility>
 </eagle>
