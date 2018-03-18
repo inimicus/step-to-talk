@@ -66,7 +66,7 @@ flags = [
 # harmful
 '/System/Library/Frameworks/Python.framework/Headers',
 '-isystem',
-'/usr/local/Cellar/avr-gcc/6.3.0/avr/include',
+'/usr/local/Cellar/avr-gcc/7.3.0/avr/include',
 '-system',
 '/usr/local/Cellar/avr-libc/2.0.0/avr/include',
 '-isystem',
