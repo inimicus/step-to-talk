@@ -5,7 +5,6 @@
  * Tabsize: 4
  * Copyright: (c) 2005 by OBJECTIVE DEVELOPMENT Software GmbH
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
- * This Revision: $Id: usbdrv.h 793 2010-07-15 15:58:11Z cs $
  */
 
 #ifndef __usbdrv_h_included__
@@ -122,7 +121,7 @@ USB messages, even if they address another (low-speed) device on the same bus.
 /* --------------------------- Module Interface ---------------------------- */
 /* ------------------------------------------------------------------------- */
 
-#define USBDRV_VERSION  20100715
+#define USBDRV_VERSION  20121206
 /* This define uniquely identifies a driver version. It is a decimal number
  * constructed from the driver's release date in the form YYYYMMDD. If the
  * driver's behavior or interface changes, you can use this constant to
@@ -194,11 +193,6 @@ extern usbMsgPtr_t usbMsgPtr;
  * implementation of usbFunctionWrite(). It is also used internally by the
  * driver for standard control requests.
  */
-extern uchar *usbMsgPtr;
-/* This variable may be used to pass transmit data to the driver from the
- * implementation of usbFunctionWrite(). It is also used internally by the
- * driver for standard control requests.
- */
 USB_PUBLIC usbMsgLen_t usbFunctionSetup(uchar data[8]);
 /* This function is called when the driver receives a SETUP transaction from
  * the host which is not answered by the driver itself (in practice: class and
@@ -252,7 +246,7 @@ USB_PUBLIC void usbSetInterrupt3(uchar *data, uchar len);
 #endif
 #endif /* USB_CFG_HAVE_INTRIN_ENDPOINT */
 #if USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH    /* simplified interface for backward compatibility */
-#define usbHidReportDescriptor const usbDescriptorHidReport
+#define usbHidReportDescriptor  usbDescriptorHidReport
 /* should be declared as: PROGMEM char usbHidReportDescriptor[]; */
 /* If you implement an HID device, you need to provide a report descriptor.
  * The HID report descriptor syntax is a bit complex. If you understand how
@@ -406,13 +400,13 @@ extern volatile schar   usbRxLen;
  * about the various methods to define USB descriptors. If you do nothing,
  * the default descriptors will be used.
  */
-#define USB_PROP_IS_DYNAMIC     (1 << 14)
+#define USB_PROP_IS_DYNAMIC     (1u << 14)
 /* If this property is set for a descriptor, usbFunctionDescriptor() will be
  * used to obtain the particular descriptor. Data directly returned via
  * usbMsgPtr are FLASH data by default, combine (OR) with USB_PROP_IS_RAM to
  * return RAM data.
  */
-#define USB_PROP_IS_RAM         (1 << 15)
+#define USB_PROP_IS_RAM         (1u << 15)
 /* If this property is set for a descriptor, the data is read from RAM
  * memory instead of Flash. The property is used for all methods to provide
  * external descriptors.
@@ -735,6 +729,7 @@ typedef struct usbRequest{
 #define USBDESCR_HID_PHYS       0x23
 
 //#define USBATTR_BUSPOWER        0x80  // USB 1.1 does not define this value any more
+#define USBATTR_BUSPOWER        0
 #define USBATTR_SELFPOWER       0x40
 #define USBATTR_REMOTEWAKE      0x20
 
