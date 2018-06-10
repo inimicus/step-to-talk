@@ -35,19 +35,32 @@
 
 #define IO_PORT         PORTB           // IO Register
 #define IO_PINS         PINB            // Inputs
-#define IO_SW           PB1             // Switch
+#define IO_SW1          PB0             // Switch
+#define IO_SW2          PB1             // Switch
+#define IO_SW3          PB2             // Switch
+
+const uchar             SW[3] = {IO_SW1, IO_SW2, IO_SW3};
+
+#define NUM_KEYS            3               // Number of keys
+#define NUM_TOTAL_KEYS      NUM_KEYS * 2    // Each key + modifier
 
 #define SAVE_EEPROM_OFFSET  12          // Where to saving data in EEPROM
 
-static uchar buttonState        = 0;    // Store button states
-static uchar buttonStateChanged = 0;    // Button edge detect
+static uchar buttonState[NUM_KEYS]          = {0};  // Store button states
+static uchar buttonStateChanged[NUM_KEYS]   = {0};  // Button edge detect
 
 typedef struct {
     uint8_t modifier;
     uint8_t scancode;
 } keymap_t;
 
-keymap_t savedKey;
+//  |                       savedKeys = 6 Bytes                       |
+//  |         SW1         |         SW2         |         SW3         |
+//  |       keymap_t      |       keymap_t      |       keymap_t      |
+//  |  1 Byte  |  1 Byte  |  1 Byte  |  1 Byte  |  1 Byte  |  1 Byte  |
+//  | Modifier | Scancode | Modifier | Scancode | Modifier | Scancode |
+
+keymap_t savedKeys[NUM_KEYS];
 
 // ----------------------------------------------------------------------------
 // USB
@@ -56,8 +69,9 @@ keymap_t savedKey;
 #define STEPTOTALK_GET_KEY   0
 #define STEPTOTALK_SET_KEY   1
 
-static uchar    reportBuffer[2];    // Buffer for HID reports
-static uchar    idleRate;           // In 4 ms units
+static uchar    reportBuffer[NUM_KEYS + 1];     // Buffer for HID reports
+                                                // Add 1 byte for modifier
+static uchar    idleRate;                       // In 4 ms units
 
 // ----------------------------------------------------------------------------
 // KEYBOARD MODIFIER KEYS
@@ -81,7 +95,7 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
     0x75, 0x01,                     //   REPORT_SIZE (1)
     0x95, 0x08,                     //   REPORT_COUNT (8)
     0x81, 0x02,                     //   INPUT (Data,Var,Abs)
-    0x95, 0x01,                     //   REPORT_COUNT (1)
+    0x95, 0x03,                     //   REPORT_COUNT (3)
     0x75, 0x08,                     //   REPORT_SIZE (8)
     0x25, 0x65,                     //   LOGICAL_MAXIMUM (101)
     0x19, 0x00,                     //   USAGE_MINIMUM (Reserved (no event indicated))
@@ -94,9 +108,12 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
 // KEYBOARD ACTIONS
 // ============================================================================
 
-static void usbSendScanCode(uchar modifier, uchar key) {
+static void usbSendScanCode(uchar modifier, uchar keys[]) {
     reportBuffer[0] = modifier;
-    reportBuffer[1] = key;
+
+    for (int i = 0; i < NUM_KEYS; i++) {
+        reportBuffer[i+1] = keys[i];
+    }
 
     usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
 }
@@ -105,17 +122,38 @@ static void usbSendScanCode(uchar modifier, uchar key) {
 
 static void doKeyboard() {
 
-    // If a button change is detected, send appropriate scan code
-    if (buttonStateChanged) {
+    static uchar keyOut[NUM_KEYS] = {0};
+    uchar modOut = 0;
+    uchar sendScanCode = 0;
 
-        if (buttonState) {
-            usbSendScanCode(savedKey.modifier, savedKey.scancode);
-        } else {
-            usbSendScanCode(MOD_NONE, 0);
+    for (uchar i = 0; i < NUM_KEYS; i++) {
+
+        // If a button change is detected, send appropriate scan code
+        if (buttonStateChanged[i]) {
+
+            if (buttonState[i]) {
+                // Press
+                keyOut[i] = savedKeys[i].scancode;
+
+                if (savedKeys[i].modifier != MOD_NONE) {
+                    modOut |= savedKeys[i].modifier;
+                }
+
+            } else {
+                keyOut[i] = 0;
+                modOut = MOD_NONE;
+            }
+
+            // Reset debounce
+            sendScanCode |= buttonStateChanged[i];
+            buttonStateChanged[i] = 0;
         }
 
-        // Reset debounce
-        buttonStateChanged = 0;
+    }
+
+    // If a change occurred, send scan code
+    if (sendScanCode) {
+        usbSendScanCode(modOut, keyOut);
     }
 
 }
@@ -128,22 +166,24 @@ static void loadKeysFromEeprom() {
     eeprom_busy_wait();
 
     // Read stored values from EEPROM
-    eeprom_read_block((void *)&savedKey,    // Pointer to save data
+    eeprom_read_block((void *)&savedKeys,   // Pointer to save data
         (const void *)SAVE_EEPROM_OFFSET,   // Location to read from
-        2);                                 // Length to read
+        NUM_TOTAL_KEYS);                    // Length to read
     
     // If EEPROM byte reads 0xFF, assume empty memory and set to zero
-    savedKey.modifier = (savedKey.modifier == 0xFF) ? 0 : savedKey.modifier;
-    savedKey.scancode = (savedKey.scancode == 0xFF) ? 0 : savedKey.scancode;
+    for (uchar i = 0; i < NUM_KEYS; i++) {
+        savedKeys[i].modifier = (savedKeys[i].modifier == 0xFF) ? 0 : savedKeys[i].modifier;
+        savedKeys[i].scancode = (savedKeys[i].scancode == 0xFF) ? 0 : savedKeys[i].scancode;
+    }
 }
 
 // ----------------------------------------------------------------------------
 
 static void saveKeysToEeprom() {
     eeprom_busy_wait();
-    eeprom_update_block((void *)&savedKey,  // Pointer to data
+    eeprom_update_block((void *)&savedKeys, // Pointer to data
         (void *)SAVE_EEPROM_OFFSET,         // Location to update
-        2);                                 // Length to update
+        NUM_TOTAL_KEYS);                    // Length to update
 }
 
 // ============================================================================
@@ -196,24 +236,26 @@ static void timerPoll(void) {
 
 static void buttonPoll() {
 
-    static uchar debounceTimeout;
-    uchar tempButtonValue;
+    static uchar debounceTimeout[NUM_KEYS];
+    uchar tempButtonValue[NUM_KEYS];
 
-    if (timeAfter(clockHundredths, debounceTimeout)) {
+    for (uchar i = 0; i < NUM_KEYS; i++) {
+        if (timeAfter(clockHundredths, debounceTimeout[i])) {
 
-        tempButtonValue = bit_is_clear(IO_PINS, IO_SW);
+            tempButtonValue[i] = bit_is_clear(IO_PINS, SW[i]);
 
-        // Trigger a change if status has changed and the debounce-delay is over,
-        // this has good debounce rejection and latency but is subject to
-        // false trigger on electrical noise
+            // Trigger a change if status has changed and the debounce-delay is over,
+            // this has good debounce rejection and latency but is subject to
+            // false trigger on electrical noise
 
-        if (tempButtonValue != buttonState) {
-            buttonState = tempButtonValue;
-            buttonStateChanged = 1;
+            if (tempButtonValue[i] != buttonState[i]) {
+                buttonState[i] = tempButtonValue[i];
+                buttonStateChanged[i] = 1;
+            }
+
+            // Restart debounce timer
+            debounceTimeout[i] = clockHundredths + 2;
         }
-
-        // Restart debounce timer
-        debounceTimeout = clockHundredths + 2;
     }
 
 }
@@ -277,18 +319,18 @@ uchar usbFunctionSetup(uchar data[8]) {
             loadKeysFromEeprom(); 
 
             // Send to host
-            usbMsgPtr = (usbMsgPtr_t)&savedKey;
-            return sizeof(savedKey);
+            usbMsgPtr = (usbMsgPtr_t)&savedKeys;
+            return sizeof(savedKeys);
 
         } else if(rq->bRequest == STEPTOTALK_SET_KEY) {
 
             // Get key from request
-            savedKey.modifier = rq->wValue.bytes[0];
-            savedKey.scancode = rq->wValue.bytes[1];
+            savedKeys[rq->wIndex.bytes[0]].modifier = rq->wValue.bytes[0];
+            savedKeys[rq->wIndex.bytes[0]].scancode = rq->wValue.bytes[1];
 
             // Save
             saveKeysToEeprom();
-            return sizeof(savedKey);
+            return sizeof(savedKeys);
 
         } else {
             // Not understood
@@ -325,7 +367,8 @@ int main(void) {
     // SYSTEM SETUP -----------------------------------------------------------
     usbSetup();             // Initialize and setup USB
     wdt_enable(WDTO_1S);    // Enable watchdog timer
-    IO_PORT = 0;            // Clear all pull-ups - hardware pullups exist
+    IO_PORT = 0;            // Clear all pull-ups
+    IO_PORT = _BV(SW[0]) | _BV(SW[1]) | _BV(SW[2]); // Set switch pull-ups
     timerInit();            // Prepare timer
     sei();                  // Enable interrupts
     loadKeysFromEeprom();   // Load saved keys from EEPROM
