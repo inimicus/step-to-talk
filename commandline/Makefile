@@ -15,9 +15,9 @@ else ifeq ($(shell uname), Darwin)
 	# Manually specify the correct path unless libusb-config correctly
 	# points to libusb-1.0
 	#USBFLAGS=$(shell libusb-config --cflags || libusb-legacy-config --cflags)
-	USBFLAGS= -I /usr/local/Cellar/libusb/1.0.21/include/libusb-1.0/
+	USBFLAGS= -I /opt/homebrew/Cellar/libusb/1.0.29/include/libusb-1.0/
 	#USBLIBS=$(shell libusb-config --libs || libusb-legacy-config --libs)
-	USBLIBS= -L /usr/local/Cellar/libusb/1.0.21/lib/ -lusb-1.0
+	USBLIBS= -L /opt/homebrew/Cellar/libusb/1.0.29/lib/ -lusb-1.0
 	EXE_SUFFIX =
 	OSFLAG = -D MAC_OS
 else ifeq ($(shell uname), OpenBSD)
