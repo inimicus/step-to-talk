@@ -7,7 +7,7 @@
 # This Revision: $Id: Makefile 362 2007-06-25 14:38:21Z cs $
 
 DEVICE=attiny85
-AVRDUDE = sudo avrdude -c usbtiny -p $(DEVICE)
+AVRDUDE = avrdude -c avrisp -p $(DEVICE) -P /dev/tty.usbmodem1112401 -b 19200
 #DEVICE=attiny45
 #AVRDUDE = avrdude -c stk500v2 -P avrdoper -p $(DEVICE)
 # The two lines above are for "avrdude" and the STK500 programmer connected
