@@ -3,7 +3,7 @@
 # Then modified by Garret Jennings <gjennings@me.com> for use in programming
 # Step-to-Talk, a user-programmable USB keyboard based on V-USB.
 
-CC=gcc
+CC=clang
 
 ifeq ($(shell uname), Linux)
 	USBFLAGS=$(shell libusb-config --cflags)
